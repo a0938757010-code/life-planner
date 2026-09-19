@@ -10,1910 +10,236 @@
 <style>
 :root{
   --pink:#C9938A; --soft-pink:#E8C4BC; --light-pink:#F5E6E3;
-  --blue:#7A9BAD; --soft-blue:#B8CFDA; --light-blue:#E3EDF3;
+  --blue:#7A9BAD; --light-blue:#E3EDF3;
   --sage:#9AAE9B; --light-sage:#E8F0E8;
   --cream:#FAF3EE; --bg:#FAFAF8; --dark:#37352F; --medium:#5A5248; --gray:#9B9A97;
   --shadow: 0 2px 10px rgba(55,53,47,0.06), 0 1px 2px rgba(55,53,47,0.05);
   --shadow-lg: 0 10px 30px rgba(55,53,47,0.10), 0 2px 8px rgba(55,53,47,0.06);
-  --radius: 18px;
 }
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
 body{
-  background:var(--bg);
-  color:var(--dark);
-  font-family:'Noto Sans TC', sans-serif;
-  font-weight:400;
-  -webkit-font-smoothing:antialiased;
-  line-height:1.7;
+  background:var(--bg); color:var(--dark); font-family:'Noto Sans TC', sans-serif;
+  font-weight:400; -webkit-font-smoothing:antialiased; line-height:1.7;
 }
-@media (prefers-reduced-motion: reduce){
-  *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
-}
-::selection{background:var(--soft-pink); color:var(--dark);}
-::-webkit-scrollbar{width:8px; height:8px;}
-::-webkit-scrollbar-thumb{background:var(--soft-pink); border-radius:8px;}
-::-webkit-scrollbar-track{background:transparent;}
+a{color:inherit; text-decoration:none;}
+img{max-width:100%;}
+.wrap{max-width:1040px; margin:0 auto; padding:0 24px;}
 
-button{font-family:inherit;}
-a{color:inherit;}
-textarea, input, select{font-family:inherit; font-size:15px; color:var(--dark);}
-:focus-visible{outline:2px solid var(--blue); outline-offset:2px; border-radius:4px;}
-
-/* ---------- App shell ---------- */
-#app{min-height:100vh; position:relative;}
-
-#loadingScreen{
-  position:fixed; inset:0; z-index:200; background:var(--bg);
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
-}
-#loadingScreen .ls-icon{font-size:34px;}
-#loadingScreen .ls-text{font-size:13px; color:var(--gray);}
-
-.topbar{
-  position:sticky; top:0; z-index:40;
-  display:flex; align-items:center; justify-content:space-between;
-  padding:14px 20px;
-  background:rgba(250,250,248,0.9);
-  backdrop-filter:blur(8px);
+/* nav */
+.nav{
+  position:sticky; top:0; z-index:30; background:rgba(250,250,248,0.92); backdrop-filter:blur(8px);
   border-bottom:1px solid rgba(55,53,47,0.08);
 }
-.topbar .brand{display:flex; align-items:center; gap:10px; cursor:pointer;}
-.topbar .brand-name{font-weight:700; font-size:15px; letter-spacing:0.5px;}
-.topbar .brand-year{font-size:11px; color:var(--gray);}
-.menu-btn{
-  width:40px; height:40px; border-radius:50%; border:none;
-  background:var(--light-pink); color:var(--pink);
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer; transition:transform .15s ease, background .15s ease;
-  font-size:18px;
+.nav-inner{display:flex; align-items:center; justify-content:space-between; padding:16px 24px; max-width:1040px; margin:0 auto;}
+.nav-brand{display:flex; align-items:center; gap:8px; font-weight:900; font-size:16px;}
+.nav-links{display:flex; gap:26px; font-size:14px; font-weight:700; color:var(--medium);}
+.nav-links a:hover{color:var(--pink);}
+.nav-cta{
+  background:var(--pink); color:#fff; padding:9px 20px; border-radius:100px; font-size:13.5px; font-weight:700;
+  transition:transform .15s ease;
 }
-.menu-btn:hover{background:var(--soft-pink); color:#fff; transform:scale(1.05);}
+.nav-cta:hover{transform:translateY(-1px);}
+@media(max-width:680px){ .nav-links{display:none;} }
 
-/* drawer nav */
-.overlay{
-  position:fixed; inset:0; background:rgba(55,53,47,0.35);
-  opacity:0; pointer-events:none; transition:opacity .25s ease; z-index:49;
-}
-.overlay.open{opacity:1; pointer-events:auto;}
-
-.drawer{
-  position:fixed; top:0; right:0; height:100%; width:300px; max-width:86vw;
-  background:var(--cream);
-  box-shadow:var(--shadow-lg);
-  z-index:50;
-  transform:translateX(100%);
-  transition:transform .28s cubic-bezier(.4,0,.2,1);
-  display:flex; flex-direction:column;
-  padding:26px 0;
-  overflow-y:auto;
-}
-.drawer.open{transform:translateX(0);}
-.drawer-head{padding:0 22px 18px; border-bottom:1px dashed rgba(55,53,47,0.15); margin-bottom:10px;}
-.drawer-head .t1{font-size:12px; letter-spacing:2px; color:var(--gray);}
-.drawer-head .t2{font-size:20px; font-weight:700; margin-top:4px;}
-.nav-item{
-  display:flex; align-items:center; gap:12px;
-  padding:12px 22px; cursor:pointer; border:none; background:none; width:100%;
-  text-align:right; justify-content:flex-end;
-  font-size:15px; color:var(--medium); transition:background .15s ease, color .15s ease;
-}
-.nav-item .dot{width:8px; height:8px; border-radius:50%; flex:none;}
-.nav-item:hover{background:var(--light-pink); color:var(--dark);}
-.nav-item.active{background:var(--soft-pink); color:#fff; font-weight:700;}
-.nav-item.active .dot{background:#fff !important;}
-.drawer-foot{margin-top:auto; padding:18px 22px 0; border-top:1px dashed rgba(55,53,47,0.15);}
-.drawer-foot .backup-btns{display:flex; gap:8px; margin-top:10px;}
-.drawer-foot button{flex:1;}
-
-main{max-width:880px; margin:0 auto; padding:26px 20px 90px;}
-.view{display:none; animation:fadeIn .35s ease;}
-.view.active{display:block;}
-@keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
-
-.eyebrow{font-size:12px; letter-spacing:3px; color:var(--pink); font-weight:700; margin-bottom:6px;}
-h1.page-title{font-size:26px; font-weight:900; margin:0 0 4px;}
-.page-sub{color:var(--medium); font-size:14px; margin:0 0 26px;}
-
-.card{
-  background:#fff; border-radius:var(--radius); padding:20px;
-  box-shadow:var(--shadow); border:1px solid rgba(55,53,47,0.05);
-}
-.card + .card{margin-top:14px;}
-
-/* buttons */
-.btn{
-  display:inline-flex; align-items:center; justify-content:center; gap:6px;
-  border:none; border-radius:100px; padding:10px 18px;
-  font-size:14px; font-weight:700; cursor:pointer;
-  transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
-  background:var(--light-pink); color:var(--dark);
-}
-.btn:hover{transform:translateY(-1px); box-shadow:var(--shadow);}
-.btn:active{transform:translateY(0);}
-.btn-primary{background:var(--pink); color:#fff;}
-.btn-blue{background:var(--blue); color:#fff;}
-.btn-sage{background:var(--sage); color:#fff;}
-.btn-ghost{background:transparent; color:var(--medium); border:1px solid rgba(55,53,47,0.15);}
-.btn-danger{background:var(--light-pink); color:#a4453c;}
-.btn-sm{padding:6px 12px; font-size:12.5px;}
-.btn-block{width:100%;}
-.icon-btn{
-  border:none; background:var(--light-sage); color:var(--sage);
-  width:32px; height:32px; border-radius:50%; cursor:pointer;
-  display:flex; align-items:center; justify-content:center; flex:none;
-  font-size:15px; transition:background .15s ease;
-}
-.icon-btn:hover{background:var(--sage); color:#fff;}
-.icon-btn.danger{background:var(--light-pink); color:var(--pink);}
-.icon-btn.danger:hover{background:var(--pink); color:#fff;}
-
-input[type=text], input[type=date], input[type=month], input[type=time], textarea, select{
-  width:100%; border:1.5px solid rgba(55,53,47,0.12); border-radius:12px;
-  padding:11px 13px; background:var(--bg); resize:vertical;
-  transition:border-color .15s ease, background .15s ease;
-}
-input[type=text]:focus, input[type=date]:focus, input[type=month]:focus, input[type=time]:focus, textarea:focus, select:focus{
-  border-color:var(--blue); background:#fff; outline:none;
-}
-label.field-label{display:block; font-size:12.5px; font-weight:700; color:var(--medium); margin:14px 0 6px;}
-label.field-label:first-child{margin-top:0;}
-
-/* ---------- Cover ---------- */
-.cover{
-  min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  text-align:center; padding:40px 24px; position:relative; overflow:hidden;
+/* hero */
+.hero{
+  padding:70px 24px 60px; text-align:center; position:relative; overflow:hidden;
   background:
     radial-gradient(circle at 15% 20%, var(--light-pink) 0%, transparent 45%),
-    radial-gradient(circle at 85% 80%, var(--light-blue) 0%, transparent 45%),
+    radial-gradient(circle at 85% 15%, var(--light-blue) 0%, transparent 45%),
     radial-gradient(circle at 50% 100%, var(--light-sage) 0%, transparent 55%),
     var(--bg);
 }
-.cover-eyebrow{font-size:13px; letter-spacing:4px; color:var(--pink); font-weight:700;}
-.cover-year{
-  font-size:min(26vw,150px); font-weight:900; line-height:0.95; margin:6px 0 0;
-  color:var(--dark); letter-spacing:-2px;
-}
-.year-box-row{display:flex; gap:10px; justify-content:center; margin-top:4px;}
-.year-box{width:clamp(36px,8vw,64px); height:clamp(52px,12vw,92px); border:4px solid var(--soft-pink); border-radius:14px; flex:none;}
-.cover-year-unit{font-size:24px; font-weight:700; color:var(--medium); margin-bottom:18px;}
-.cover-title{font-size:clamp(22px,5vw,34px); font-weight:900; margin:10px 0 8px;}
-.cover-sub{color:var(--medium); font-size:15px; max-width:420px; margin:0 auto 30px;}
-.cover .plant-wrap{margin:6px 0 26px;}
-.cover-quote{
-  font-size:13.5px; color:var(--medium); font-weight:500; max-width:360px;
-  border-top:1px dashed rgba(55,53,47,0.2); padding-top:16px; margin-top:8px;
-}
-.cover-enter{margin-top:28px;}
-.year-edit{
-  display:inline-flex; align-items:center; gap:8px; margin-top:14px; font-size:14px; color:var(--pink); cursor:pointer;
-  font-weight:700; background:var(--light-pink); padding:10px 18px; border-radius:100px;
-  transition:background .15s ease, transform .15s ease;
-}
-.year-edit:hover{background:var(--soft-pink); color:#fff; transform:translateY(-1px);}
-
-/* ---------- TOC ---------- */
-.toc-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
-@media(max-width:560px){.toc-grid{grid-template-columns:1fr;}}
-.toc-item{
-  background:#fff; border-radius:16px; padding:18px; cursor:pointer;
-  box-shadow:var(--shadow); border:1px solid rgba(55,53,47,0.05);
-  display:flex; flex-direction:column; gap:8px;
+.hero-eyebrow{font-size:13px; letter-spacing:4px; color:var(--pink); font-weight:700;}
+.hero h1{font-size:clamp(28px,5.5vw,46px); font-weight:900; line-height:1.35; margin:16px 0 18px;}
+.hero h1 .accent{color:var(--pink);}
+.hero-sub{color:var(--medium); font-size:16px; max-width:520px; margin:0 auto 34px;}
+.hero-ctas{display:flex; gap:12px; justify-content:center; flex-wrap:wrap;}
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:6px;
+  border:none; border-radius:100px; padding:14px 28px; font-size:15px; font-weight:700; cursor:pointer;
   transition:transform .15s ease, box-shadow .15s ease;
 }
-.toc-item:hover{transform:translateY(-2px); box-shadow:var(--shadow-lg);}
-.toc-item .num{font-size:11px; color:var(--gray); font-weight:700;}
-.toc-item .name{font-size:16px; font-weight:700;}
-.toc-item .desc{font-size:12.5px; color:var(--gray);}
-.toc-item .bar{width:26px; height:4px; border-radius:4px;}
+.btn-primary{background:var(--pink); color:#fff;}
+.btn-primary:hover{transform:translateY(-2px); box-shadow:var(--shadow-lg);}
+.btn-ghost{background:#fff; color:var(--dark); border:1.5px solid rgba(55,53,47,0.15);}
+.btn-ghost:hover{transform:translateY(-2px); box-shadow:var(--shadow);}
 
-/* ---------- Dashboard ---------- */
-.stat-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:18px;}
-@media(max-width:640px){.stat-grid{grid-template-columns:1fr 1fr;}}
-.stat-card{
-  border-radius:16px; padding:16px; box-shadow:var(--shadow);
-  display:flex; flex-direction:column; gap:6px;
-}
-.stat-card .label{font-size:11.5px; font-weight:700; opacity:0.75;}
-.stat-card .value{font-size:26px; font-weight:900;}
-.stat-card .sub{font-size:11px; opacity:0.7;}
-.stat-c1{background:var(--light-pink); color:#8a4f45;}
-.stat-c2{background:var(--light-blue); color:#3f5c6c;}
-.stat-c3{background:var(--light-sage); color:#4b5e4c;}
-.stat-c4{background:var(--cream); color:var(--pink); border:1px solid var(--soft-pink);}
+.hero-stats{display:flex; gap:40px; justify-content:center; margin-top:56px; flex-wrap:wrap;}
+.hero-stat .num{font-size:30px; font-weight:900; color:var(--pink);}
+.hero-stat .lbl{font-size:12.5px; color:var(--gray); font-weight:700; margin-top:4px;}
 
-/* ---------- toolbar / search ---------- */
-.toolbar{display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; align-items:center;}
-.toolbar input[type=text]{flex:1; min-width:140px;}
-.filter-pills{display:flex; gap:6px; flex-wrap:wrap;}
-.pill{
-  border:1.5px solid rgba(55,53,47,0.12); background:#fff; border-radius:100px;
-  padding:7px 13px; font-size:12.5px; font-weight:700; cursor:pointer; color:var(--medium);
-  transition:all .15s ease;
-}
-.pill.active{border-color:transparent;}
-.pill[data-status=all].active{background:var(--dark); color:#fff;}
-.pill[data-status=awesome].active{background:var(--sage); color:#fff;}
-.pill[data-status=keepgoing].active{background:var(--blue); color:#fff;}
-.pill[data-status=lazy].active{background:var(--pink); color:#fff;}
+/* sections */
+section{padding:70px 0;}
+.section-eyebrow{font-size:12px; letter-spacing:3px; color:var(--pink); font-weight:700; text-align:center;}
+.section-title{font-size:clamp(22px,4vw,30px); font-weight:900; text-align:center; margin:10px 0 46px;}
 
-/* ---------- list rows ---------- */
-.row{
-  display:flex; align-items:center; gap:12px; padding:14px 16px; border-radius:14px;
-  background:#fff; box-shadow:var(--shadow); cursor:pointer; margin-bottom:10px;
-  border:1px solid rgba(55,53,47,0.05); transition:transform .12s ease, box-shadow .12s ease;
+.feat-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+@media(max-width:760px){ .feat-grid{grid-template-columns:1fr 1fr;} }
+@media(max-width:520px){ .feat-grid{grid-template-columns:1fr;} }
+.feat-card{
+  background:#fff; border-radius:18px; padding:24px; box-shadow:var(--shadow); border:1px solid rgba(55,53,47,0.05);
 }
-.row:hover{transform:translateX(-2px); box-shadow:var(--shadow-lg);}
-.row .status-dot{width:11px; height:11px; border-radius:50%; flex:none;}
-.status-awesome{background:var(--sage);}
-.status-keepgoing{background:var(--blue);}
-.status-lazy{background:var(--pink);}
-.row .row-main{flex:1; min-width:0;}
-.row .row-date{font-size:12px; color:var(--gray); font-weight:700;}
-.row .row-text{font-size:14px; color:var(--dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;}
-.row .row-arrow{color:var(--gray); font-size:14px;}
-.empty-state{
-  text-align:center; padding:50px 20px; color:var(--gray);
-}
-.empty-state .es-icon{font-size:34px; margin-bottom:10px;}
-.empty-state .es-text{font-size:14px;}
+.feat-card .icon{font-size:26px; margin-bottom:12px;}
+.feat-card .name{font-weight:900; font-size:15px; margin-bottom:6px;}
+.feat-card .desc{font-size:13px; color:var(--gray); line-height:1.8;}
 
-/* ---------- section header w/ add ---------- */
-.sec-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; gap:10px;}
-.sec-head h2{font-size:17px; font-weight:900; margin:0;}
+.preview-wrap{
+  background:#fff; border-radius:24px; padding:8px; box-shadow:var(--shadow-lg); max-width:760px; margin:0 auto;
+  border:1px solid rgba(55,53,47,0.06);
+}
+.preview-wrap img{display:block; width:100%; border-radius:18px;}
+.preview-caption{text-align:center; font-size:12.5px; color:var(--gray); margin-top:16px;}
 
-/* ---------- checklist ---------- */
-.check-row{display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px dashed rgba(55,53,47,0.1);}
-.check-row:last-child{border-bottom:none;}
-.check-box{
-  width:22px; height:22px; border-radius:7px; border:2px solid var(--soft-pink); flex:none;
-  display:flex; align-items:center; justify-content:center; cursor:pointer; background:#fff;
-  transition:all .15s ease; font-size:13px; color:#fff;
+.price-section{background:var(--cream);}
+.price-card{
+  max-width:400px; margin:0 auto; background:#fff; border-radius:24px; padding:40px 32px; text-align:center;
+  box-shadow:var(--shadow-lg); border:2px solid var(--soft-pink);
 }
-.check-box.checked{background:var(--sage); border-color:var(--sage);}
-.check-row input[type=text]{border:none; background:none; padding:4px 2px; flex:1;}
-.check-row input[type=text]:focus{background:var(--light-pink);}
-.check-row.done input[type=text]{color:var(--gray); text-decoration:line-through;}
-.check-row .time-input{width:92px; flex:none; padding:6px 8px; font-size:12.5px;}
+.price-card .price-name{font-weight:900; font-size:17px;}
+.price-card .price-num{font-size:48px; font-weight:900; color:var(--pink); margin:14px 0 4px;}
+.price-card .price-num sup{font-size:20px; margin-right:2px;}
+.price-card .price-note{font-size:12.5px; color:var(--gray); margin-bottom:24px;}
+.price-list{text-align:left; font-size:14px; color:var(--medium); line-height:2.2; margin-bottom:28px;}
+.price-list li{list-style:none; padding-left:26px; position:relative;}
+.price-list li:before{content:"✓"; position:absolute; left:0; color:var(--sage); font-weight:900;}
 
-/* ---------- 50 dreams ---------- */
-.progress-wrap{margin-bottom:18px;}
-.progress-track{height:10px; background:var(--light-pink); border-radius:100px; overflow:hidden; margin-top:8px;}
-.progress-fill{height:100%; background:linear-gradient(90deg,var(--pink),var(--sage)); border-radius:100px; transition:width .4s ease;}
-.dream-grid{display:grid; grid-template-columns:1fr; gap:2px;}
-.dream-row{display:flex; align-items:center; gap:10px; padding:8px 4px;}
-.dream-idx{font-size:11px; color:var(--gray); font-weight:700; width:26px; flex:none; text-align:center;}
-
-/* ---------- vision board ---------- */
-.vb-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
-@media(max-width:560px){.vb-grid{grid-template-columns:1fr;}}
-.vb-card{border-radius:16px; padding:16px; box-shadow:var(--shadow); position:relative; min-height:110px; display:flex; flex-direction:column;}
-.vb-card .vb-title{font-weight:900; font-size:15px; margin-bottom:6px; padding-right:24px;}
-.vb-card .vb-desc{font-size:12.5px; opacity:0.85; flex:1;}
-.vb-card .vb-del{position:absolute; top:10px; right:10px;}
-.color-swatches{display:flex; gap:8px; margin:6px 0 2px;}
-.swatch{width:26px; height:26px; border-radius:50%; cursor:pointer; border:2px solid transparent;}
-.swatch.active{border-color:var(--dark);}
-
-/* ---------- modal ---------- */
-.modal-overlay{
-  position:fixed; inset:0; background:rgba(55,53,47,0.4); z-index:60;
-  display:flex; align-items:flex-end; justify-content:center;
-  opacity:0; pointer-events:none; transition:opacity .2s ease;
+.buy-box{
+  max-width:520px; margin:36px auto 0; background:var(--light-sage); border-radius:18px; padding:24px 28px; text-align:center;
 }
-.modal-overlay.open{opacity:1; pointer-events:auto;}
-@media(min-width:640px){.modal-overlay{align-items:center;}}
-.modal{
-  background:var(--cream); width:100%; max-width:520px; max-height:90vh; overflow-y:auto;
-  border-radius:22px 22px 0 0; padding:24px 22px 30px;
-  transform:translateY(30px); transition:transform .25s cubic-bezier(.4,0,.2,1);
-}
-.modal-overlay.open .modal{transform:translateY(0);}
-@media(min-width:640px){.modal{border-radius:22px;}}
-.modal-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;}
-.modal-head h3{margin:0; font-size:18px; font-weight:900;}
-.modal-close{border:none; background:none; font-size:20px; color:var(--gray); cursor:pointer; padding:4px;}
-.status-choice{display:flex; gap:8px; flex-wrap:wrap;}
-.status-opt{
-  flex:1; min-width:100px; border:1.5px solid rgba(55,53,47,0.12); background:#fff; border-radius:12px;
-  padding:10px; text-align:center; cursor:pointer; font-size:12.5px; font-weight:700; color:var(--medium);
-  transition:all .15s ease;
-}
-.status-opt[data-s=awesome].active{background:var(--sage); border-color:var(--sage); color:#fff;}
-.status-opt[data-s=keepgoing].active{background:var(--blue); border-color:var(--blue); color:#fff;}
-.status-opt[data-s=lazy].active{background:var(--pink); border-color:var(--pink); color:#fff;}
-.quote-row{display:flex; gap:8px; align-items:flex-start;}
-#calDayModalOverlay{align-items:center;}
-.quote-row textarea{flex:1;}
-.quote-row input[type=text]{flex:1;}
-.modal-actions{display:flex; gap:10px; margin-top:22px;}
-.modal-actions .btn{flex:1;}
-
-/* freeform pages */
-.prompt-list{font-size:13px; color:var(--gray); margin:0 0 14px; padding-left:0; list-style:none;}
-.prompt-list li{padding:4px 0 4px 18px; position:relative;}
-.prompt-list li:before{content:"·"; position:absolute; left:4px; color:var(--pink); font-weight:900;}
-.big-textarea{min-height:260px; font-size:15px; line-height:1.9;}
-
-.toast{
-  position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(20px);
-  background:var(--dark); color:#fff; padding:12px 22px; border-radius:100px; font-size:13.5px;
-  box-shadow:var(--shadow-lg); z-index:80; opacity:0; pointer-events:none; transition:all .25s ease;
-}
-.toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
-
-.month-block{margin-bottom:14px;}
-.month-block .mb-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;}
-.month-block .mb-title{font-weight:900; font-size:15px;}
-.event-item{display:flex; gap:12px; padding:12px 0; border-bottom:1px dashed rgba(55,53,47,0.12);}
-.event-item:last-child{border-bottom:none;}
-.event-date{font-size:11px; font-weight:700; color:var(--pink); width:70px; flex:none; padding-top:2px;}
-.event-body{flex:1;}
-.event-title{font-weight:700; font-size:14px;}
-.event-note{font-size:12.5px; color:var(--gray); margin-top:2px;}
-.event-actions{display:flex; gap:6px; flex:none;}
-
-/* ---------- 月記事：月曆規劃 ---------- */
-.cal-nav{display:flex; align-items:center; justify-content:center; gap:18px; margin-bottom:14px;}
-.cal-nav-label{font-size:18px; font-weight:900; min-width:130px; text-align:center;}
-.cal-weekdays{display:grid; grid-template-columns:repeat(7,1fr); text-align:center; font-size:11px; font-weight:700; color:var(--gray); padding-bottom:8px; border-bottom:1px solid rgba(55,53,47,0.08); margin-bottom:4px;}
-.cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:3px;}
-.cal-cell{min-height:62px; border-radius:10px; padding:4px 3px; cursor:pointer; transition:background .15s ease; background:var(--bg); overflow:hidden;}
-.cal-cell:hover{background:var(--light-pink);}
-.cal-cell.other-month{opacity:0.32; cursor:default;}
-.cal-cell.other-month:hover{background:var(--bg);}
-.cal-cell.today{box-shadow:inset 0 0 0 2px var(--pink);}
-.cal-date-num{font-size:11.5px; font-weight:700; color:var(--medium);}
-.cal-tag{font-size:9px; background:var(--light-sage); color:#4b5e4c; border-radius:5px; padding:1px 4px; margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-.cal-tag-more{font-size:9px; color:var(--gray); margin-top:2px;}
-@media(max-width:560px){
-  .cal-cell{min-height:46px; padding:3px 2px;}
-  .cal-tag{font-size:8px; padding:1px 3px;}
-  .cal-nav-label{font-size:15px; min-width:100px;}
-}
-.cal-day-tag-row{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 0; border-bottom:1px dashed rgba(55,53,47,0.1);}
-.cal-day-tag-row:last-child{border-bottom:none;}
-.cal-day-tag-row span{font-size:14px;}
-.cal-day-tag-time{font-size:11.5px; font-weight:700; color:var(--pink); width:52px; flex:none;}
-.cal-day-tag-text{flex:1;}
-.cal-day-form-row{display:flex; gap:8px; align-items:center;}
-.cal-day-form-row input[type=time], .cal-day-form-row select{width:110px; flex:none;}
-
-.hint{font-size:12px; color:var(--gray); margin-top:6px;}
-
-/* ---------- 今年目標：分類 + 引導 ---------- */
-.goal-intro{
-  background:linear-gradient(135deg, var(--light-pink), var(--light-sage));
-  border-radius:14px; padding:16px 18px; margin-bottom:14px; font-size:13px; color:var(--medium);
-}
-.goal-intro .gi-title{font-weight:900; color:var(--dark); font-size:14px; margin-bottom:4px;}
-.goal-intro .gi-example{margin-top:8px; font-size:12.5px;}
-.goal-intro .gi-example b{color:var(--dark);}
-.cat-pills{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;}
-.cat-pill{
-  border:1.5px solid rgba(55,53,47,0.12); background:#fff; border-radius:100px;
-  padding:6px 12px; font-size:12px; font-weight:700; cursor:pointer; color:var(--medium);
-  transition:all .15s ease; display:inline-flex; align-items:center; gap:4px;
-}
-.cat-pill.active{border-color:transparent; background:var(--dark); color:#fff;}
-.goal-cat-select{
-  width:auto; flex:none; padding:6px 8px; font-size:12px; border-radius:8px;
-  border:1.5px solid rgba(55,53,47,0.12); background:var(--bg); color:var(--medium); font-weight:700;
-}
-.goal-progress{margin-bottom:14px;}
-
-/* ---------- 年度大事總覽 ---------- */
-.northstar-card{
-  background:linear-gradient(135deg, var(--dark), #4a463c); color:#fff;
-  border-radius:20px; padding:22px; box-shadow:var(--shadow-lg);
-}
-.northstar-card .ns-label{font-size:11px; letter-spacing:2px; color:var(--soft-pink); font-weight:700; margin-bottom:8px;}
-.northstar-card textarea{
-  background:rgba(255,255,255,0.08); border:1.5px solid rgba(255,255,255,0.18); color:#fff;
-  font-size:16px; font-weight:700; line-height:1.6; min-height:70px;
-}
-.northstar-card textarea::placeholder{color:rgba(255,255,255,0.45); font-weight:400;}
-.northstar-card .ns-hint{font-size:12px; color:rgba(255,255,255,0.65); margin-top:10px; line-height:1.7;}
-.ov-section-title{font-size:14px; font-weight:900; margin:22px 0 10px; display:flex; align-items:center; gap:6px;}
-.ov-cat-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
-@media(max-width:560px){.ov-cat-grid{grid-template-columns:1fr;}}
-.ov-cat-card{border-radius:16px; padding:16px; box-shadow:var(--shadow);}
-.ov-cat-card .oc-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;}
-.ov-cat-card .oc-name{font-weight:900; font-size:14px;}
-.ov-cat-card .oc-count{font-size:11.5px; font-weight:700; opacity:0.75;}
-.ov-cat-card .oc-list{font-size:12.5px; line-height:1.9;}
-.ov-cat-card .oc-list .done{text-decoration:line-through; opacity:0.55;}
-.ov-cat-card .oc-empty{font-size:12px; opacity:0.6;}
-.ov-timeline{position:relative; padding-left:18px;}
-.ov-timeline:before{content:''; position:absolute; left:4px; top:4px; bottom:4px; width:2px; background:var(--soft-pink);}
-.ov-tl-item{position:relative; padding-bottom:16px;}
-.ov-tl-item:last-child{padding-bottom:0;}
-.ov-tl-item:before{content:''; position:absolute; left:-18px; top:4px; width:10px; height:10px; border-radius:50%; background:var(--pink); border:2px solid #fff; box-shadow:0 0 0 1px var(--soft-pink);}
-.ov-tl-date{font-size:11px; font-weight:700; color:var(--pink);}
-.ov-tl-title{font-size:13.5px; font-weight:700; margin-top:1px;}
-
-/* ---------- 垃圾桶 ---------- */
-.trash-item{
-  display:flex; align-items:center; gap:12px; padding:14px 16px; border-radius:14px;
-  background:#fff; box-shadow:var(--shadow); margin-bottom:10px;
-  border:1px solid rgba(55,53,47,0.05);
-}
-.trash-item .trash-type{
-  font-size:10.5px; font-weight:700; color:var(--pink); background:var(--light-pink);
-  border-radius:100px; padding:3px 10px; flex:none;
-}
-.trash-item .trash-main{flex:1; min-width:0;}
-.trash-item .trash-text{font-size:14px; color:var(--dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-.trash-item .trash-meta{font-size:11.5px; color:var(--gray); margin-top:2px;}
-.trash-item .trash-actions{display:flex; gap:6px; flex:none;}
-.trash-banner{
-  background:var(--light-pink); border-radius:14px; padding:14px 18px; margin-bottom:16px;
-  font-size:12.5px; color:#8a4f45; display:flex; align-items:center; gap:8px;
+.buy-box .bb-title{font-weight:900; font-size:15px; margin-bottom:8px;}
+.buy-box .bb-desc{font-size:13.5px; color:var(--medium); margin-bottom:16px; line-height:1.8;}
+.buy-box .bb-line{
+  display:inline-flex; align-items:center; gap:8px; background:#fff; padding:10px 20px; border-radius:100px;
+  font-weight:700; font-size:14px; box-shadow:var(--shadow);
 }
 
-.copyright-footer{
-  text-align:center; padding:24px 20px 44px; font-size:11px; color:var(--gray); line-height:1.8;
-  max-width:520px; margin:0 auto;
+.faq-item{
+  background:#fff; border-radius:14px; padding:18px 22px; box-shadow:var(--shadow); border:1px solid rgba(55,53,47,0.05);
+  max-width:680px; margin:0 auto 12px;
 }
+.faq-item .q{font-weight:700; font-size:14.5px; display:flex; gap:8px;}
+.faq-item .q .qmark{color:var(--pink);}
+.faq-item .a{font-size:13.5px; color:var(--gray); margin-top:8px; line-height:1.8; padding-left:22px;}
 
-/* ---------- 列印用內容（畫面上永遠隱藏，只在列印時出現） ---------- */
-#printArea{display:none;}
+footer{padding:40px 24px 50px; text-align:center;}
+footer .foot-cta{margin-bottom:20px;}
+footer .copyright{font-size:11px; color:var(--gray); line-height:1.8; max-width:480px; margin:0 auto;}
 </style>
 </head>
 <body>
 
-<div id="loadingScreen">
-  <div class="ls-icon" id="loadingIcon">🌱</div>
-  <div class="ls-text" id="loadingText">載入中，請稍候…</div>
-  <button class="btn btn-primary btn-sm" id="loadingRetryBtn" style="display:none;">重新整理</button>
-</div>
-
-<div id="app">
-
-  <div class="overlay" id="overlay"></div>
-  <nav class="drawer" id="drawer">
-    <div class="drawer-head">
-      <div class="t1">MENU</div>
-      <div class="t2">目錄索引</div>
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">🌱 人生規劃手帳</div>
+    <div class="nav-links">
+      <a href="#features">核心功能</a>
+      <a href="#preview">畫面預覽</a>
+      <a href="#price">方案</a>
+      <a href="#faq">常見問題</a>
     </div>
-    <div id="navList"></div>
-    <div class="drawer-foot">
-      <div class="hint">資料已自動同步到雲端，用同一組連結換手機、換電腦打開都看得到；建議定期匯出備份，以防萬一。</div>
-      <div class="backup-btns">
-        <button class="btn btn-ghost btn-sm btn-block" id="exportBtn">匯出備份</button>
-        <button class="btn btn-ghost btn-sm btn-block" id="importBtnTrigger">匯入備份</button>
-      </div>
-      <input type="file" id="importFile" accept="application/json" style="display:none;">
-    </div>
-  </nav>
-
-  <div class="topbar" id="topbar" style="display:none;">
-    <div class="brand" id="brandHome">
-      <span style="font-size:18px;">🌱</span>
-      <div>
-        <div class="brand-name">人生規劃手帳</div>
-        <div class="brand-year" id="brandYear"></div>
-      </div>
-    </div>
-    <button class="menu-btn" id="menuBtn" aria-label="開啟選單">☰</button>
+    <a class="nav-cta" href="app.html">開始使用</a>
   </div>
+</nav>
 
-  <main>
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-eyebrow">MY LIFE PLANNER</div>
+    <h1>寫下今年的目標，<br>成為自己<span class="accent">人生的規劃者</span></h1>
+    <p class="hero-sub">月記事、日記事、年度目標、夢想清單，一站整理你想前進的每一步。不用安裝、不用教學，打開即可使用。</p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="app.html">立即體驗手帳 →</a>
+      <a class="btn btn-ghost" href="#price">查看方案</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">12</div><div class="lbl">大功能模組</div></div>
+      <div class="hero-stat"><div class="num">1</div><div class="lbl">個專屬連結</div></div>
+      <div class="hero-stat"><div class="num">0</div><div class="lbl">安裝門檻・純網頁</div></div>
+    </div>
+  </div>
+</header>
 
-    <!-- 封面 -->
-    <section class="view" id="view-cover">
-      <div class="cover">
-        <div class="cover-eyebrow">MY LIFE PLANNER</div>
-        <div class="cover-year" id="coverYear"></div>
-        <div class="cover-year-unit">年度生活手帳</div>
-        <div class="plant-wrap" id="coverPlant"></div>
-        <h1 class="cover-title">成為自己人生的規劃者</h1>
-        <p class="cover-sub">寫下今年的目標、每天的復盤，讓五年後、十年後的自己，感謝現在願意慢慢前進的你。</p>
-        <div class="cover-quote" id="coverQuote">「不用很厲害才能開始，但要開始了才會很厲害。」</div>
-        <div class="cover-enter">
-          <button class="btn btn-primary" id="enterBtn" style="padding:13px 30px; font-size:15px;">打開手帳 →</button>
-        </div>
-        <div class="year-edit" id="yearEditBtn">✎ 填上今年年份</div>
+<section id="features">
+  <div class="wrap">
+    <div class="section-eyebrow">CORE FEATURES</div>
+    <h2 class="section-title">核心功能</h2>
+    <div class="feat-grid">
+      <div class="feat-card"><div class="icon">🧭</div><div class="name">年度大事總覽</div><div class="desc">一眼看懂今年的方向、目標進度與重要時刻，面對選擇不再糾結。</div></div>
+      <div class="feat-card"><div class="icon">🎯</div><div class="name">今年目標</div><div class="desc">把模糊的想望，寫成具體、可以打勾完成的目標，依分類追蹤進度。</div></div>
+      <div class="feat-card"><div class="icon">🗓️</div><div class="name">月記事・月曆規劃</div><div class="desc">提前規劃這個月的每一天，點一個日期就能新增當天要做的事。</div></div>
+      <div class="feat-card"><div class="icon">📝</div><div class="name">日記事・每日復盤</div><div class="desc">代辦、顯化、感恩一次記錄，累積連續紀錄，養成每天前進的習慣。</div></div>
+      <div class="feat-card"><div class="icon">✨</div><div class="name">50 個夢想清單</div><div class="desc">不用一次寫滿，想到什麼先寫下來，慢慢完成、慢慢打勾。</div></div>
+      <div class="feat-card"><div class="icon">🖼️</div><div class="name">夢想版 + 5/10年後的我</div><div class="desc">用文字描繪理想生活的畫面，寫給未來、更遠的自己。</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="preview">
+  <div class="wrap">
+    <div class="section-eyebrow">PREVIEW</div>
+    <h2 class="section-title">畫面預覽</h2>
+    <div class="preview-wrap">
+      <div style="background:var(--light-pink); border-radius:18px; padding:60px 20px; text-align:center; color:var(--medium); font-size:14px;">
+        🌱 打開「開始使用」即可看到完整手帳畫面
       </div>
-    </section>
+    </div>
+    <div class="preview-caption">封面、目錄、月曆、日記事……每一頁都為妳的日常打造。</div>
+  </div>
+</section>
 
-    <!-- 目錄 -->
-    <section class="view" id="view-toc">
-      <div class="eyebrow">目錄</div>
-      <h1 class="page-title">今天，想翻開哪一頁？</h1>
-      <p class="page-sub">點選卡片即可前往對應的頁面。</p>
-      <div class="toc-grid" id="tocGrid"></div>
-    </section>
-
-    <!-- 年度大事總覽 -->
-    <section class="view" id="view-overview">
-      <div class="eyebrow">OVERVIEW</div>
-      <h1 class="page-title">年度大事總覽</h1>
-      <p class="page-sub">思路清晰、終點明確——這一頁讓你一眼看懂今年的方向、目標進度與重要時刻，面對選擇不再糾結。</p>
-
-      <div class="northstar-card">
-        <div class="ns-label">年度主軸 · 這一年，我想往哪裡去？</div>
-        <textarea id="northStarText" rows="2" placeholder="例如：把身體養好、把手上的事做穩、多陪伴家人"></textarea>
-        <div class="ns-hint">面對每一個選擇時，先問問自己：這個選擇，讓我更靠近這裡，還是更遠離？想不清楚的時候，回來看看這句話。</div>
-      </div>
-
-      <div class="ov-section-title">🎯 目標總覽（依分類）</div>
-      <div class="ov-cat-grid" id="ovCatGrid"></div>
-
-      <div class="ov-section-title">📌 年度重要記事時間軸</div>
-      <div class="card" id="ovTimelineWrap"></div>
-    </section>
-
-    <!-- 今年目標 -->
-    <section class="view" id="view-goals">
-      <div class="eyebrow">GOALS</div>
-      <h1 class="page-title">今年目標</h1>
-      <p class="page-sub">把模糊的想望，寫成具體、可以打勾完成的目標。</p>
-      <div class="goal-intro">
-        <div class="gi-title">💡 從虛幻的語言，變成能實際執行的目標</div>
-        寫得越具體，就越容易真的做到。
-        <div class="gi-example">比較模糊：<b>「我想變健康」</b> → 更具體：<b>「每週運動 3 次，晚上 12 點前睡覺」</b></div>
-      </div>
-      <div class="card goal-progress">
-        <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:700; color:var(--medium);">
-          <span>目標完成進度</span><span id="goalProgressText">0 / 0</span>
-        </div>
-        <div class="progress-track"><div class="progress-fill" id="goalProgressFill" style="width:0%;"></div></div>
-      </div>
-      <div class="cat-pills" id="goalCatFilter"></div>
-      <div class="card">
-        <div id="goalsList"></div>
-        <button class="btn btn-sage btn-sm" id="addGoalBtn" style="margin-top:10px;">＋ 新增目標</button>
-      </div>
-    </section>
-
-    <!-- 夢想版 -->
-    <section class="view" id="view-visionboard">
-      <div class="eyebrow">VISION BOARD</div>
-      <h1 class="page-title">夢想版</h1>
-      <p class="page-sub">把嚮往的畫面貼在這裡，用文字描繪出理想生活的樣子。</p>
-      <div class="sec-head"><span></span><button class="btn btn-primary btn-sm" id="addVbBtn">＋ 新增夢想卡</button></div>
-      <div class="vb-grid" id="vbGrid"></div>
-    </section>
-
-    <!-- 50個夢想清單 -->
-    <section class="view" id="view-dreams50">
-      <div class="eyebrow">50 DREAMS</div>
-      <h1 class="page-title">50 個夢想清單</h1>
-      <p class="page-sub">不用一次寫滿，想到什麼就先寫下來，慢慢完成、慢慢打勾。</p>
-      <div class="card progress-wrap">
-        <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:700; color:var(--medium);">
-          <span>完成進度</span><span id="dreamProgressText">0 / 50</span>
-        </div>
-        <div class="progress-track"><div class="progress-fill" id="dreamProgressFill" style="width:0%;"></div></div>
-      </div>
-      <div class="card">
-        <div class="dream-grid" id="dreamGrid"></div>
-      </div>
-    </section>
-
-    <!-- 5年後的我 -->
-    <section class="view" id="view-future5">
-      <div class="eyebrow">FIVE YEARS FROM NOW</div>
-      <h1 class="page-title">5 年後的我</h1>
-      <ul class="prompt-list">
-        <li>我住在哪裡？過著什麼樣的生活？</li>
-        <li>我的工作 / 事業是什麼樣子？</li>
-        <li>我身邊有誰？我們的關係如何？</li>
-        <li>我最引以為傲的一件事是什麼？</li>
+<section id="price" class="price-section">
+  <div class="wrap">
+    <div class="section-eyebrow">PRICING</div>
+    <h2 class="section-title">方案價格</h2>
+    <div class="price-card">
+      <div class="price-name">人生規劃手帳・個人版</div>
+      <div class="price-num"><sup>NT$</sup>888</div>
+      <div class="price-note">一次付費，長期使用</div>
+      <ul class="price-list">
+        <li>專屬個人連結，資料雲端同步</li>
+        <li>換手機、換電腦都看得到</li>
+        <li>12 大功能模組全部解鎖</li>
+        <li>可匯出／匯入備份</li>
       </ul>
-      <div class="card">
-        <textarea class="big-textarea" id="future5Text" placeholder="寫下 5 年後理想中的自己……"></textarea>
-      </div>
-    </section>
-
-    <!-- 10年後的我 -->
-    <section class="view" id="view-future10">
-      <div class="eyebrow">TEN YEARS FROM NOW</div>
-      <h1 class="page-title">10 年後的我</h1>
-      <ul class="prompt-list">
-        <li>回顧這十年，我最感謝自己做了什麼決定？</li>
-        <li>我成為了什麼樣的人？</li>
-        <li>我想留給世界 / 身邊的人什麼？</li>
-        <li>如果現在的我能收到一句話，會是什麼？</li>
-      </ul>
-      <div class="card">
-        <textarea class="big-textarea" id="future10Text" placeholder="寫下 10 年後理想中的自己……"></textarea>
-      </div>
-    </section>
-
-    <!-- 年度重要記事 -->
-    <section class="view" id="view-yearevents">
-      <div class="eyebrow">ANNUAL EVENTS</div>
-      <h1 class="page-title">年度重要記事</h1>
-      <p class="page-sub">記下今年值得記住的重要日子、里程碑或轉折點。</p>
-      <div class="sec-head"><span></span><button class="btn btn-primary btn-sm" id="addEventBtn">＋ 新增記事</button></div>
-      <div class="card" id="eventListWrap"></div>
-    </section>
-
-    <!-- 月記事 -->
-    <section class="view" id="view-monthnotes">
-      <div class="eyebrow">MONTHLY</div>
-      <h1 class="page-title">月記事・月曆規劃</h1>
-      <p class="page-sub">提前規劃這個月的每一天，點一個日期就能新增當天要做的事，一眼掌握未來一個月的行程。</p>
-
-      <div class="cal-nav">
-        <button class="icon-btn" id="calPrevBtn">‹</button>
-        <div class="cal-nav-label" id="calNavLabel">2026年8月</div>
-        <button class="icon-btn" id="calNextBtn">›</button>
-      </div>
-      <div class="card" style="padding:12px;">
-        <div class="cal-weekdays"><span>週日</span><span>週一</span><span>週二</span><span>週三</span><span>週四</span><span>週五</span><span>週六</span></div>
-        <div class="cal-grid" id="calGrid"></div>
-      </div>
-
-      <div class="card" style="margin-top:14px;">
-        <div class="mb-title" id="calReflectTitle">這個月的一句話</div>
-        <textarea id="calReflectText" rows="3" placeholder="這個月過得怎麼樣？" style="margin-top:8px;"></textarea>
-        <div class="hint">小提醒：這裡不分年份，每年到了這個月，都可以回來繼續寫。</div>
-      </div>
-    </section>
-
-    <!-- 日記事 -->
-    <section class="view" id="view-daily">
-      <div class="eyebrow">DAILY REVIEW</div>
-      <h1 class="page-title">日記事・每日復盤</h1>
-      <p class="page-sub">復盤每一天，讓自己每天進步一點點。</p>
-
-      <div class="stat-grid">
-        <div class="stat-card stat-c1"><div class="label">🔥 連續紀錄</div><div class="value" id="statStreak">0</div><div class="sub">天</div></div>
-        <div class="stat-card stat-c2"><div class="label">📖 累計紀錄</div><div class="value" id="statTotal">0</div><div class="sub">天</div></div>
-        <div class="stat-card stat-c3"><div class="label">🌟 本月超棒率</div><div class="value" id="statAwesome">0%</div><div class="sub">本月已記錄天數中</div></div>
-        <div class="stat-card stat-c4"><div class="label">✨ 夢想清單</div><div class="value" id="statDreams">0/50</div><div class="sub">已完成</div></div>
-      </div>
-
-      <div class="sec-head">
-        <h2>今日快速紀錄</h2>
-        <button class="btn btn-primary btn-sm" id="addTodayBtn">＋ 復盤今天</button>
-      </div>
-
-      <div class="toolbar">
-        <input type="text" id="dailySearch" placeholder="搜尋日期、代辦、顯化、感恩內容…">
-      </div>
-      <div class="filter-pills" id="statusFilter" style="margin-bottom:14px;">
-        <button class="pill active" data-status="all">全部</button>
-        <button class="pill" data-status="awesome">🌿 超棒都完成了</button>
-        <button class="pill" data-status="keepgoing">💧 繼續加油</button>
-        <button class="pill" data-status="lazy">🍑 偷懶要打屁屁</button>
-      </div>
-
-      <div id="dailyList"></div>
-    </section>
-
-    <!-- 垃圾桶 -->
-    <section class="view" id="view-trash">
-      <div class="eyebrow">TRASH</div>
-      <h1 class="page-title">垃圾桶</h1>
-      <p class="page-sub">刪除的項目會先保留在這裡 30 天，超過期限會自動永久刪除。</p>
-      <div class="trash-banner">🗑️ 東西刪除後不會馬上消失，這裡可以救回來，超過 30 天才會真的不見。</div>
-      <div id="trashListWrap"></div>
-    </section>
-
-    <div class="copyright-footer">本內容版權為 雅茜（IG：joanne_0110）所有。僅供個人使用，未經授權不得以任何形式複製、公開分享、轉載或轉售，違者將依法追究相關責任。</div>
-
-  </main>
-</div>
-
-<!-- 純列印用內容：畫面上不會顯示，只有在觸發列印時才會出現 -->
-<div id="printArea"></div>
-
-<!-- daily entry modal -->
-<div class="modal-overlay" id="dailyModalOverlay">
-  <div class="modal">
-    <div class="modal-head">
-      <h3 id="dailyModalTitle">今日復盤</h3>
-      <button class="modal-close" id="dailyModalClose">✕</button>
     </div>
-
-    <label class="field-label">日期</label>
-    <input type="date" id="f-date">
-
-    <label class="field-label">今日總結</label>
-    <input type="text" id="f-summary" placeholder="用一句話總結今天（會顯示在日記事列表的標題）">
-
-    <label class="field-label">今天給我一句勉勵的話</label>
-    <div class="quote-row">
-      <textarea id="f-quote" rows="2" placeholder="寫給今天的自己的一句話"></textarea>
-      <button class="icon-btn" id="randomQuoteBtn" title="換一句">🔀</button>
-    </div>
-
-    <label class="field-label">今天過得如何？</label>
-    <div class="status-choice" id="statusChoice">
-      <button type="button" class="status-opt" data-s="awesome">🌿 超棒<br>都完成了</button>
-      <button type="button" class="status-opt" data-s="keepgoing">💧 繼續<br>加油</button>
-      <button type="button" class="status-opt" data-s="lazy">🍑 偷懶<br>要打屁屁</button>
-    </div>
-
-    <label class="field-label">代辦事項</label>
-    <div id="f-todos"></div>
-    <button class="btn btn-ghost btn-sm" id="addTodoBtn" style="margin-top:6px;">＋ 新增代辦</button>
-
-    <label class="field-label">顯化</label>
-    <textarea id="f-manifest" rows="3" placeholder="寫下想要顯化、吸引到生活裡的事"></textarea>
-
-    <label class="field-label">感恩</label>
-    <textarea id="f-gratitude" rows="3" placeholder="今天有什麼值得感恩的事？"></textarea>
-
-    <div class="modal-actions">
-      <button class="btn btn-ghost" id="deleteEntryBtn" style="display:none;">刪除</button>
-      <button class="btn btn-primary btn-block" id="saveEntryBtn">儲存</button>
+    <div class="buy-box">
+      <div class="bb-title">💬 想購買，請這樣聯絡我</div>
+      <div class="bb-desc">加我的 LINE，告訴我妳想開始使用，我會確認付款後傳送妳的專屬連結。</div>
+      <div class="bb-line">LINE ID：0110joanne</div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- calendar day modal -->
-<div class="modal-overlay" id="calDayModalOverlay">
-  <div class="modal">
-    <div class="modal-head">
-      <h3 id="calDayModalTitle">8/15 週六</h3>
-      <button class="modal-close" id="calDayModalClose">✕</button>
+<section id="faq">
+  <div class="wrap">
+    <div class="section-eyebrow">FAQ</div>
+    <h2 class="section-title">常見問題</h2>
+    <div class="faq-item">
+      <div class="q"><span class="qmark">Q.</span>換手機、換電腦還可以用嗎？</div>
+      <div class="a">可以，資料存在雲端，只要用同一組專屬連結，換裝置打開都看得到。</div>
     </div>
-    <div id="calDayTagList"></div>
-    <form class="cal-day-form-row" id="calDayForm" style="margin-top:12px;">
-      <select id="calDayNewTime"></select>
-      <input type="text" id="calDayNewTag" placeholder="新增這天要做的事" enterkeyhint="done">
-      <button type="submit" class="icon-btn" id="calDayAddBtn" title="新增">＋</button>
-    </form>
+    <div class="faq-item">
+      <div class="q"><span class="qmark">Q.</span>需要下載 App 或安裝什麼嗎？</div>
+      <div class="a">不需要，純網頁形式，用瀏覽器打開連結就能使用，手機、平板、電腦都適用。</div>
+    </div>
+    <div class="faq-item">
+      <div class="q"><span class="qmark">Q.</span>我的資料安全嗎？會被別人看到嗎？</div>
+      <div class="a">每個人的專屬連結各自獨立，彼此完全分開，不會互相看到對方的內容。建議收到連結後自己妥善保存，並定期使用「匯出備份」功能保存一份在自己裝置上。</div>
+    </div>
+    <div class="faq-item">
+      <div class="q"><span class="qmark">Q.</span>連結不見了怎麼辦？</div>
+      <div class="a">加我的 LINE（0110joanne）告訴我，我這邊會協助重新提供給妳。</div>
+    </div>
   </div>
-</div>
+</section>
 
-<div class="toast" id="toast"></div>
+<footer>
+  <div class="foot-cta">
+    <a class="btn btn-primary" href="app.html">立即體驗手帳 →</a>
+  </div>
+  <div class="copyright">本內容版權為 雅茜（IG：joanne_0110）所有。僅供個人使用，未經授權不得以任何形式複製、公開分享、轉載或轉售，違者將依法追究相關責任。</div>
+</footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script>
-(function(){
-"use strict";
-
-/* ============== 雲端資料庫設定 ============== */
-/* Project URL、anon 公開金鑰：這兩個可以安全出現在前端程式碼裡，不是管理鑰匙 */
-var SUPABASE_URL = 'https://uswymhfiquiotoqbxopo.supabase.co';
-var SUPABASE_ANON_KEY = 'sb_publishable_VXw1yDbBIHPpYH5SJQ4Kjg_X-p-Gitf';
-var TABLE_NAME = 'life_planner_data';
-var sbClient = null;
-try{
-  if(window.supabase && typeof window.supabase.createClient === 'function'){
-    sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  }
-}catch(e){
-  console.error('Supabase 初始化失敗', e);
-}
-
-function showLoadingError(msg){
-  var icon = document.getElementById('loadingIcon');
-  var text = document.getElementById('loadingText');
-  var retry = document.getElementById('loadingRetryBtn');
-  if(icon) icon.textContent = '⚠️';
-  if(text) text.textContent = msg;
-  if(retry){
-    retry.style.display = 'inline-flex';
-    retry.onclick = function(){ window.location.reload(); };
-  }
-}
-
-/* 每個買家專屬的連結代碼：網址帶著 ?u=xxxx，沒有的話自動產生一組新的並更新網址 */
-function getBuyerKey(){
-  var params = new URLSearchParams(window.location.search);
-  var key = params.get('u');
-  if(!key){
-    key = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : (uid()+uid()+uid());
-    params.set('u', key);
-    var newUrl = window.location.pathname + '?' + params.toString();
-    window.history.replaceState({}, '', newUrl);
-  }
-  return key;
-}
-
-/* ============== 資料層 ============== */
-var TRASH_RETENTION_DAYS = 30;
-
-function todayStr(){ return formatDate(new Date()); }
-function formatDate(d){
-  var y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
-  return y+'-'+m+'-'+day;
-}
-function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
-
-function defaultData(){
-  return {
-    year: '',
-    northStar: '',
-    goals: [],
-    visionBoard: [],
-    dreams50: Array.from({length:50}, function(_,i){ return {id:uid(), text:'', done:false}; }),
-    future5: '',
-    future10: '',
-    yearEvents: [],
-    monthNotes: Array.from({length:12}, function(_,i){ return {id:uid(), month:String(i+1).padStart(2,'0'), text:''}; }),
-    calendarEvents: [],
-    days: [],
-    trash: []
-  };
-}
-
-var BUYER_KEY = getBuyerKey();
-var DATA = null;
-
-function normalizeData(parsed){
-  var d = defaultData();
-  for(var k in d){ if(parsed && parsed[k] !== undefined) d[k] = parsed[k]; }
-  if(!Array.isArray(d.dreams50) || d.dreams50.length===0) d.dreams50 = defaultData().dreams50;
-  if(!Array.isArray(d.monthNotes) || d.monthNotes.length===0){
-    d.monthNotes = defaultData().monthNotes;
-  } else {
-    d.monthNotes = d.monthNotes.map(function(m){
-      var mm = (m.month||'').slice(-2);
-      return {id:m.id||uid(), month:mm, text:m.text||''};
-    });
-    var have = {};
-    d.monthNotes.forEach(function(m){ have[m.month]=true; });
-    for(var i=1;i<=12;i++){
-      var mm2 = String(i).padStart(2,'0');
-      if(!have[mm2]) d.monthNotes.push({id:uid(), month:mm2, text:''});
-    }
-    d.monthNotes.sort(function(a,b){ return a.month.localeCompare(b.month); });
-  }
-  if(!Array.isArray(d.calendarEvents)) d.calendarEvents = [];
-  if(!Array.isArray(d.trash)) d.trash = [];
-  return d;
-}
-
-async function loadDataFromCloud(){
-  var res = await sbClient.from(TABLE_NAME).select('data').eq('buyer_key', BUYER_KEY).maybeSingle();
-  if(res.error) throw res.error;
-  if(res.data && res.data.data){
-    return normalizeData(res.data.data);
-  }
-  var fresh = defaultData();
-  var insertRes = await sbClient.from(TABLE_NAME).insert({buyer_key: BUYER_KEY, data: fresh});
-  if(insertRes.error) throw insertRes.error;
-  return fresh;
-}
-
-var saveTimer = null;
-function saveData(){
-  if(!sbClient){ showToast('連線雲端失敗，這次修改可能沒有存到'); return; }
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(function(){
-    sbClient.from(TABLE_NAME).update({data: DATA, updated_at: new Date().toISOString()}).eq('buyer_key', BUYER_KEY)
-      .then(function(res){
-        if(res.error){ console.error('儲存失敗', res.error); showToast('儲存失敗，請檢查網路連線'); }
-      })
-      .catch(function(e){ console.error('儲存失敗', e); showToast('儲存失敗，請檢查網路連線'); });
-  }, 600);
-}
-
-function hideLoadingScreen(){
-  var el = document.getElementById('loadingScreen');
-  if(el) el.style.display = 'none';
-}
-
-/* ============== 垃圾桶核心邏輯 ============== */
-/*
-  每一筆垃圾桶紀錄格式：
-  { id, type, deletedAt(ISO時間), label(顯示用文字), payload(還原需要的完整資料) }
-  type 可能是：goal / visionboard / yearevent / calendarevent / dailyentry / dailytodo
-  dailytodo 的 payload 額外帶 dayId，還原時要塞回對應那篇日記事的 todos 裡；
-  如果那篇日記事本身也被刪除了，還原代辦事項前會先擋下來，提醒使用者。
-*/
-var TRASH_TYPE_LABEL = {
-  goal:'今年目標', visionboard:'夢想版', yearevent:'年度重要記事',
-  calendarevent:'月記事', dailyentry:'日記事', dailytodo:'代辦事項'
-};
-
-function moveToTrash(type, label, payload){
-  DATA.trash.push({
-    id:uid(), type:type, deletedAt:new Date().toISOString(),
-    label:label, payload:payload
-  });
-  saveData();
-}
-
-function purgeExpiredTrash(){
-  var now = Date.now();
-  var before = DATA.trash.length;
-  DATA.trash = DATA.trash.filter(function(t){
-    var age = (now - new Date(t.deletedAt).getTime()) / (1000*60*60*24);
-    return age < TRASH_RETENTION_DAYS;
-  });
-  if(DATA.trash.length !== before) saveData();
-}
-
-function daysLeft(deletedAt){
-  var age = (Date.now() - new Date(deletedAt).getTime()) / (1000*60*60*24);
-  return Math.max(0, Math.ceil(TRASH_RETENTION_DAYS - age));
-}
-
-function confirmDelete(msg){
-  return confirm((msg||'確定要刪除嗎？') + '\n\n刪除後會保留 30 天，可以到「垃圾桶」復原，超過 30 天會自動永久刪除。');
-}
-
-function restoreTrashItem(trashId){
-  var t = DATA.trash.find(function(x){return x.id===trashId;});
-  if(!t) return;
-  if(t.type==='goal'){
-    DATA.goals.push(t.payload);
-  } else if(t.type==='visionboard'){
-    DATA.visionBoard.push(t.payload);
-  } else if(t.type==='yearevent'){
-    DATA.yearEvents.push(t.payload);
-  } else if(t.type==='calendarevent'){
-    DATA.calendarEvents.push(t.payload);
-  } else if(t.type==='dailyentry'){
-    var dupe = DATA.days.find(function(x){return x.date===t.payload.date;});
-    if(dupe){
-      showToast('這一天已經有紀錄了，無法還原，請先處理現有紀錄');
-      return;
-    }
-    DATA.days.push(t.payload);
-  } else if(t.type==='dailytodo'){
-    var day = DATA.days.find(function(x){return x.id===t.payload.dayId;});
-    if(!day){
-      showToast('這則代辦所屬的日記事已經不存在了，無法還原');
-      return;
-    }
-    day.todos = day.todos || [];
-    day.todos.push(t.payload.todo);
-  }
-  DATA.trash = DATA.trash.filter(function(x){return x.id!==trashId;});
-  saveData();
-  showToast('已還原');
-  renderTrash();
-}
-
-function permanentlyDeleteTrashItem(trashId){
-  if(!confirm('這會直接永久刪除，無法再復原，確定嗎？')) return;
-  DATA.trash = DATA.trash.filter(function(x){return x.id!==trashId;});
-  saveData();
-  renderTrash();
-}
-
-function renderTrash(){
-  purgeExpiredTrash();
-  var wrap = document.getElementById('trashListWrap');
-  var sorted = DATA.trash.slice().sort(function(a,b){ return b.deletedAt.localeCompare(a.deletedAt); });
-  if(sorted.length===0){
-    wrap.innerHTML = '<div class="empty-state"><div class="es-icon">🗑️</div><div class="es-text">垃圾桶是空的</div></div>';
-    return;
-  }
-  wrap.innerHTML = '';
-  sorted.forEach(function(t){
-    var el = document.createElement('div');
-    el.className = 'trash-item';
-    var left = daysLeft(t.deletedAt);
-    el.innerHTML =
-      '<div class="trash-type">'+(TRASH_TYPE_LABEL[t.type]||'項目')+'</div>'+
-      '<div class="trash-main"><div class="trash-text">'+escapeHTML(t.label||'（未命名）')+'</div>'+
-      '<div class="trash-meta">刪除於 '+t.deletedAt.slice(0,10)+' ・ 還剩 '+left+' 天自動永久刪除</div></div>'+
-      '<div class="trash-actions">'+
-      '<button class="icon-btn" data-restore="'+t.id+'" title="復原">↺</button>'+
-      '<button class="icon-btn danger" data-purge="'+t.id+'" title="永久刪除">✕</button></div>';
-    wrap.appendChild(el);
-  });
-  wrap.querySelectorAll('[data-restore]').forEach(function(el){
-    el.addEventListener('click', function(){ restoreTrashItem(el.dataset.restore); });
-  });
-  wrap.querySelectorAll('[data-purge]').forEach(function(el){
-    el.addEventListener('click', function(){ permanentlyDeleteTrashItem(el.dataset.purge); });
-  });
-}
-
-/* ============== 勉勵語錄 ============== */
-var QUOTES = [
-  "不用很厲害才能開始，但要開始了才會很厲害。",
-  "今天的一小步，是五年後那個你回頭感謝的原因。",
-  "慢慢來，但不要停下來。",
-  "你不需要完美，只需要今天比昨天多前進一點點。",
-  "休息也是進度的一部分，別對自己太苛刻。",
-  "把今天過好，未來自然會被照顧到。",
-  "種下的種子不會馬上開花，但它一直在生長。",
-  "你正在成為自己一直想成為的那個人。",
-  "允許自己慢慢來，你已經做得很好了。",
-  "每一次復盤，都是給自己的一次溫柔提醒。",
-  "今天沒做到也沒關係，明天還可以重新開始。",
-  "你的努力，時間都看得見。",
-  "先完成，再完美。",
-  "小小的堅持，會累積成巨大的改變。",
-  "感謝今天願意繼續前進的自己。",
-  "不比較，只和昨天的自己比。",
-  "你所渴望的生活，正在被你一天天建造。",
-  "累的時候休息，但不要放棄。",
-  "寫下來的夢想，比放在心裡的更容易實現。",
-  "今天，也要謝謝自己還在努力。"
-];
-function randomQuote(){ return QUOTES[Math.floor(Math.random()*QUOTES.length)]; }
-
-/* ============== 顏色（用於目錄 / 夢想版） ============== */
-var PALETTE = [
-  {key:'pink', bg:'var(--light-pink)', accent:'var(--pink)'},
-  {key:'blue', bg:'var(--light-blue)', accent:'var(--blue)'},
-  {key:'sage', bg:'var(--light-sage)', accent:'var(--sage)'},
-  {key:'cream', bg:'var(--cream)', accent:'var(--medium)'}
-];
-
-/* ============== 導覽 ============== */
-var VIEWS = [
-  {id:'cover', name:'封面', desc:'手帳的開始', icon:'🌱'},
-  {id:'toc', name:'目錄', desc:'快速前往各頁面', icon:'📖'},
-  {id:'overview', name:'年度大事總覽', desc:'一眼看懂今年方向與進度', icon:'🧭'},
-  {id:'goals', name:'今年目標', desc:'今年最想完成的事', icon:'🎯'},
-  {id:'visionboard', name:'夢想版', desc:'描繪理想生活', icon:'🖼️'},
-  {id:'dreams50', name:'50個夢想清單', desc:'一生的願望清單', icon:'✨'},
-  {id:'future5', name:'5年後的我', desc:'給未來的自己', icon:'🌤️'},
-  {id:'future10', name:'10年後的我', desc:'給更遠的自己', icon:'🌌'},
-  {id:'yearevents', name:'年度重要記事', desc:'今年的重要時刻', icon:'📌'},
-  {id:'monthnotes', name:'月記事', desc:'規劃未來一個月的每一天', icon:'🗓️'},
-  {id:'daily', name:'日記事', desc:'每日復盤系統', icon:'📝'},
-  {id:'trash', name:'垃圾桶', desc:'復原刪除的項目', icon:'🗑️'}
-];
-
-var currentView = 'cover';
-
-function showView(id){
-  currentView = id;
-  document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active'); });
-  var target = document.getElementById('view-'+id);
-  if(target) target.classList.add('active');
-  var topbar = document.getElementById('topbar');
-  topbar.style.display = (id==='cover') ? 'none' : 'flex';
-  window.scrollTo({top:0, behavior:'auto'});
-  renderNav();
-  renderViewContent(id);
-  closeDrawer();
-}
-
-function renderViewContent(id){
-  if(id==='toc') renderTOC();
-  if(id==='overview') renderOverview();
-  if(id==='goals') renderGoals();
-  if(id==='visionboard') renderVisionBoard();
-  if(id==='dreams50') renderDreams50();
-  if(id==='future5') document.getElementById('future5Text').value = DATA.future5 || '';
-  if(id==='future10') document.getElementById('future10Text').value = DATA.future10 || '';
-  if(id==='yearevents') renderYearEvents();
-  if(id==='monthnotes') renderCalendar();
-  if(id==='daily') renderDaily();
-  if(id==='cover') renderCover();
-  if(id==='trash') renderTrash();
-}
-
-/* ---- drawer / nav ---- */
-function renderNav(){
-  var wrap = document.getElementById('navList');
-  wrap.innerHTML = '';
-  VIEWS.forEach(function(v){
-    var btn = document.createElement('button');
-    btn.className = 'nav-item' + (currentView===v.id ? ' active':'');
-    btn.innerHTML = '<span>'+v.icon+' '+v.name+'</span><span class="dot" style="background:var(--pink)"></span>';
-    btn.addEventListener('click', function(){ showView(v.id); });
-    wrap.appendChild(btn);
-  });
-}
-function openDrawer(){
-  document.getElementById('drawer').classList.add('open');
-  document.getElementById('overlay').classList.add('open');
-}
-function closeDrawer(){
-  document.getElementById('drawer').classList.remove('open');
-  document.getElementById('overlay').classList.remove('open');
-}
-
-/* ---- toast ---- */
-var toastTimer;
-function showToast(msg){
-  var t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2200);
-}
-
-/* ============== 植物成長圖示（signature element） ============== */
-function plantSVG(stage, size){
-  size = size || 90;
-  var stem = '';
-  var leaves = '';
-  var flower = '';
-  if(stage>=1){ stem = '<path d="M50 80 L50 '+(stage>=2?40:60)+'" stroke="#9AAE9B" stroke-width="4" stroke-linecap="round" fill="none"/>'; }
-  if(stage>=2){
-    leaves = '<path d="M50 58 C38 55 34 44 40 36 C48 44 50 52 50 58Z" fill="#9AAE9B"/>'+
-             '<path d="M50 66 C62 63 66 52 60 44 C52 52 50 60 50 66Z" fill="#B8CFDA"/>';
-  }
-  if(stage>=3){
-    flower = '<g transform="translate(50,34)">'+
-      '<circle cx="0" cy="0" r="6" fill="#E8C4BC"/>'+
-      '<circle cx="9" cy="-3" r="6" fill="#C9938A"/>'+
-      '<circle cx="-9" cy="-3" r="6" fill="#C9938A"/>'+
-      '<circle cx="5" cy="7" r="6" fill="#E8C4BC"/>'+
-      '<circle cx="-5" cy="7" r="6" fill="#E8C4BC"/>'+
-      '<circle cx="0" cy="0" r="5" fill="#F5E6E3"/>'+
-      '</g>';
-  }
-  var seed = stage===0 ? '<circle cx="50" cy="78" r="4" fill="#5A5248"/>' : '';
-  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 100 100" aria-hidden="true">'+
-    '<ellipse cx="50" cy="85" rx="30" ry="6" fill="#E8F0E8"/>'+
-    stem + leaves + flower + seed +
-    '</svg>';
-}
-function plantStageFromStreak(streak){
-  if(streak<=0) return 0;
-  if(streak<3) return 1;
-  if(streak<7) return 2;
-  return 3;
-}
-
-/* ============== 封面 ============== */
-function renderCover(){
-  var coverYearEl = document.getElementById('coverYear');
-  if(DATA.year){
-    coverYearEl.textContent = DATA.year;
-  } else {
-    coverYearEl.innerHTML = '<span class="year-box-row"><span class="year-box"></span><span class="year-box"></span><span class="year-box"></span><span class="year-box"></span></span>';
-  }
-  document.getElementById('coverQuote').textContent = '「'+QUOTES[new Date().getDate()%QUOTES.length]+'」';
-  var streak = calcStreak();
-  document.getElementById('coverPlant').innerHTML = plantSVG(plantStageFromStreak(streak), 100);
-  document.getElementById('brandYear').textContent = DATA.year ? (DATA.year + ' 年度手帳') : '不限年份手帳';
-}
-
-/* ============== 目錄 ============== */
-function renderTOC(){
-  var grid = document.getElementById('tocGrid');
-  grid.innerHTML = '';
-  VIEWS.filter(function(v){return v.id!=='cover' && v.id!=='toc';}).forEach(function(v, idx){
-    var c = PALETTE[idx % PALETTE.length];
-    var el = document.createElement('div');
-    el.className = 'toc-item';
-    el.innerHTML =
-      '<div class="num">'+v.icon+'</div>'+
-      '<div class="name">'+v.name+'</div>'+
-      '<div class="desc">'+v.desc+'</div>'+
-      '<div class="bar" style="background:'+c.accent+'"></div>';
-    el.addEventListener('click', function(){ showView(v.id); });
-    grid.appendChild(el);
-  });
-}
-
-/* ============== 今年目標 ============== */
-var GOAL_CATEGORIES = [
-  {key:'life', name:'生活', icon:'🏡'},
-  {key:'health', name:'健康', icon:'💪'},
-  {key:'work', name:'工作', icon:'💼'},
-  {key:'finance', name:'財務', icon:'💰'},
-  {key:'growth', name:'成長', icon:'🌱'}
-];
-function catInfo(key){
-  return GOAL_CATEGORIES.find(function(c){return c.key===key;}) || {key:'', name:'未分類', icon:'📎'};
-}
-var goalCatFilterVal = 'all';
-function renderGoalCatFilter(){
-  var wrap = document.getElementById('goalCatFilter');
-  var all = [{key:'all', name:'全部', icon:''}].concat(GOAL_CATEGORIES);
-  wrap.innerHTML = all.map(function(c){
-    return '<button type="button" class="cat-pill'+(goalCatFilterVal===c.key?' active':'')+'" data-cat="'+c.key+'">'+(c.icon?c.icon+' ':'')+c.name+'</button>';
-  }).join('');
-  wrap.querySelectorAll('.cat-pill').forEach(function(el){
-    el.addEventListener('click', function(){
-      goalCatFilterVal = el.dataset.cat;
-      renderGoals();
-    });
-  });
-}
-function renderGoals(){
-  renderGoalCatFilter();
-  var doneCount = DATA.goals.filter(function(g){return g.done;}).length;
-  document.getElementById('goalProgressText').textContent = doneCount + ' / ' + DATA.goals.length;
-  document.getElementById('goalProgressFill').style.width = DATA.goals.length ? (doneCount/DATA.goals.length*100)+'%' : '0%';
-
-  var wrap = document.getElementById('goalsList');
-  wrap.innerHTML = '';
-  var visible = DATA.goals.filter(function(g){ return goalCatFilterVal==='all' || (g.category||'')===goalCatFilterVal; });
-  if(DATA.goals.length===0){
-    wrap.innerHTML = '<div class="empty-state"><div class="es-icon">🎯</div><div class="es-text">還沒有目標，新增今年第一個目標吧</div></div>';
-  } else if(visible.length===0){
-    wrap.innerHTML = '<div class="empty-state"><div class="es-icon">🔍</div><div class="es-text">這個分類還沒有目標</div></div>';
-  }
-  var catOptions = '<option value="">未分類</option>' + GOAL_CATEGORIES.map(function(c){ return '<option value="'+c.key+'">'+c.icon+' '+c.name+'</option>'; }).join('');
-  visible.forEach(function(g){
-    var row = document.createElement('div');
-    row.className = 'check-row' + (g.done?' done':'');
-    row.innerHTML =
-      '<div class="check-box'+(g.done?' checked':'')+'" data-id="'+g.id+'">'+(g.done?'✓':'')+'</div>'+
-      '<select class="goal-cat-select" data-id="'+g.id+'">'+catOptions+'</select>'+
-      '<input type="text" value="'+escapeAttr(g.text)+'" placeholder="輸入具體、可執行的目標" data-id="'+g.id+'">'+
-      '<button class="icon-btn danger" data-del="'+g.id+'" title="刪除">✕</button>';
-    wrap.appendChild(row);
-    row.querySelector('.goal-cat-select').value = g.category || '';
-  });
-  wrap.querySelectorAll('.check-box').forEach(function(el){
-    el.addEventListener('click', function(){
-      var g = DATA.goals.find(function(x){return x.id===el.dataset.id;});
-      g.done = !g.done; saveData(); renderGoals();
-    });
-  });
-  wrap.querySelectorAll('input[type=text]').forEach(function(el){
-    el.addEventListener('input', function(){
-      var g = DATA.goals.find(function(x){return x.id===el.dataset.id;});
-      g.text = el.value; saveData();
-    });
-  });
-  wrap.querySelectorAll('.goal-cat-select').forEach(function(el){
-    el.addEventListener('change', function(){
-      var g = DATA.goals.find(function(x){return x.id===el.dataset.id;});
-      g.category = el.value; saveData();
-    });
-  });
-  wrap.querySelectorAll('[data-del]').forEach(function(el){
-    el.addEventListener('click', function(){
-      if(!confirmDelete('確定要刪除這個目標嗎？')) return;
-      var g = DATA.goals.find(function(x){return x.id===el.dataset.del;});
-      moveToTrash('goal', g.text || '（未命名目標）', g);
-      DATA.goals = DATA.goals.filter(function(x){return x.id!==el.dataset.del;});
-      saveData(); renderGoals();
-      showToast('已移到垃圾桶，30 天內可復原');
-    });
-  });
-}
-document.addEventListener('DOMContentLoaded', function(){
-  document.getElementById('addGoalBtn').addEventListener('click', function(){
-    DATA.goals.push({id:uid(), text:'', category: goalCatFilterVal==='all' ? '' : goalCatFilterVal, done:false});
-    saveData(); renderGoals();
-    var inputs = document.querySelectorAll('#goalsList input[type=text]');
-    if(inputs.length) inputs[inputs.length-1].focus();
-  });
-});
-
-/* ============== 年度大事總覽 ============== */
-function renderOverview(){
-  document.getElementById('northStarText').value = DATA.northStar || '';
-  renderOverviewCats();
-  renderOverviewTimeline();
-}
-function renderOverviewCats(){
-  var grid = document.getElementById('ovCatGrid');
-  var palIdx = 0;
-  grid.innerHTML = GOAL_CATEGORIES.map(function(c){
-    var pal = PALETTE[palIdx % PALETTE.length]; palIdx++;
-    var items = DATA.goals.filter(function(g){ return (g.category||'')===c.key; });
-    var doneN = items.filter(function(g){return g.done;}).length;
-    var listHtml = items.length
-      ? items.map(function(g){ return '<div class="'+(g.done?'done':'')+'">'+(g.done?'✓ ':'· ')+escapeHTML(g.text||'（未命名目標）')+'</div>'; }).join('')
-      : '<div class="oc-empty">尚未設定，去「今年目標」加一個吧</div>';
-    return '<div class="ov-cat-card" style="background:'+pal.bg+'">'+
-      '<div class="oc-head"><div class="oc-name">'+c.icon+' '+c.name+'</div><div class="oc-count">'+doneN+'/'+items.length+'</div></div>'+
-      '<div class="oc-list">'+listHtml+'</div>'+
-      '</div>';
-  }).join('');
-  grid.querySelectorAll('.ov-cat-card').forEach(function(el){
-    el.style.cursor = 'pointer';
-    el.addEventListener('click', function(){ showView('goals'); });
-  });
-}
-function renderOverviewTimeline(){
-  var wrap = document.getElementById('ovTimelineWrap');
-  var sorted = DATA.yearEvents.slice().sort(function(a,b){ return (a.date||'').localeCompare(b.date||''); });
-  if(sorted.length===0){
-    wrap.innerHTML = '<div class="empty-state"><div class="es-icon">📌</div><div class="es-text">還沒有年度記事，去新增今年第一個重要時刻吧</div></div>';
-    return;
-  }
-  wrap.innerHTML = '<div class="ov-timeline">' + sorted.map(function(ev){
-    return '<div class="ov-tl-item"><div class="ov-tl-date">'+escapeHTML(ev.date||'未定日期')+'</div><div class="ov-tl-title">'+escapeHTML(ev.title||'（未命名）')+'</div></div>';
-  }).join('') + '</div>';
-  wrap.style.cursor = 'pointer';
-  wrap.onclick = function(){ showView('yearevents'); };
-}
-document.addEventListener('DOMContentLoaded', function(){
-  document.getElementById('northStarText').addEventListener('input', function(e){
-    DATA.northStar = e.target.value; saveData();
-  });
-});
-
-
-/* ============== 夢想版 ============== */
-function renderVisionBoard(){
-  var grid = document.getElementById('vbGrid');
-  grid.innerHTML = '';
-  if(DATA.visionBoard.length===0){
-    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="es-icon">🖼️</div><div class="es-text">新增第一張夢想卡，描繪你嚮往的畫面</div></div>';
-  }
-  DATA.visionBoard.forEach(function(card){
-    var c = PALETTE.find(function(p){return p.key===card.color;}) || PALETTE[0];
-    var el = document.createElement('div');
-    el.className = 'vb-card';
-    el.style.background = c.bg;
-    el.innerHTML =
-      '<button class="icon-btn danger vb-del" data-del="'+card.id+'">✕</button>'+
-      '<input type="text" class="vb-title-input" data-id="'+card.id+'" value="'+escapeAttr(card.title)+'" placeholder="夢想標題" style="background:transparent;border:none;font-weight:900;font-size:15px;padding:0 24px 6px 0;">'+
-      '<textarea class="vb-desc-input" data-id="'+card.id+'" rows="3" placeholder="描述這個夢想的畫面……" style="background:transparent;border:none;font-size:12.5px;padding:0;">'+escapeHTML(card.desc)+'</textarea>'+
-      '<div class="color-swatches" data-swatch-for="'+card.id+'"></div>';
-    grid.appendChild(el);
-    var swatchWrap = el.querySelector('.color-swatches');
-    PALETTE.forEach(function(p){
-      var sw = document.createElement('div');
-      sw.className = 'swatch' + (card.color===p.key?' active':'');
-      sw.style.background = p.accent;
-      sw.addEventListener('click', function(){ card.color=p.key; saveData(); renderVisionBoard(); });
-      swatchWrap.appendChild(sw);
-    });
-  });
-  grid.querySelectorAll('.vb-title-input').forEach(function(el){
-    el.addEventListener('input', function(){
-      var c = DATA.visionBoard.find(function(x){return x.id===el.dataset.id;});
-      c.title = el.value; saveData();
-    });
-  });
-  grid.querySelectorAll('.vb-desc-input').forEach(function(el){
-    el.addEventListener('input', function(){
-      var c = DATA.visionBoard.find(function(x){return x.id===el.dataset.id;});
-      c.desc = el.value; saveData();
-    });
-  });
-  grid.querySelectorAll('[data-del]').forEach(function(el){
-    el.addEventListener('click', function(){
-      if(!confirmDelete('確定要刪除這張夢想卡嗎？')) return;
-      var c = DATA.visionBoard.find(function(x){return x.id===el.dataset.del;});
-      moveToTrash('visionboard', c.title || '（未命名夢想卡）', c);
-      DATA.visionBoard = DATA.visionBoard.filter(function(x){return x.id!==el.dataset.del;});
-      saveData(); renderVisionBoard();
-      showToast('已移到垃圾桶，30 天內可復原');
-    });
-  });
-}
-document.addEventListener('DOMContentLoaded', function(){
-  document.getElementById('addVbBtn').addEventListener('click', function(){
-    DATA.visionBoard.push({id:uid(), title:'', desc:'', color: PALETTE[DATA.visionBoard.length % PALETTE.length].key});
-    saveData(); renderVisionBoard();
-  });
-});
-
-/* ============== 50 個夢想清單 ============== */
-function renderDreams50(){
-  var grid = document.getElementById('dreamGrid');
-  grid.innerHTML = '';
-  var doneCount = DATA.dreams50.filter(function(d){return d.done;}).length;
-  document.getElementById('dreamProgressText').textContent = doneCount + ' / ' + DATA.dreams50.length;
-  document.getElementById('dreamProgressFill').style.width = (doneCount/DATA.dreams50.length*100)+'%';
-  DATA.dreams50.forEach(function(d, i){
-    var row = document.createElement('div');
-    row.className = 'dream-row';
-    row.innerHTML =
-      '<div class="dream-idx">'+String(i+1).padStart(2,'0')+'</div>'+
-      '<div class="check-box'+(d.done?' checked':'')+'" data-id="'+d.id+'">'+(d.done?'✓':'')+'</div>'+
-      '<input type="text" value="'+escapeAttr(d.text)+'" placeholder="第 '+(i+1)+' 個夢想……" data-id="'+d.id+'" style="'+(d.done?'color:var(--gray);text-decoration:line-through;':'')+'">';
-    grid.appendChild(row);
-  });
-  grid.querySelectorAll('.check-box').forEach(function(el){
-    el.addEventListener('click', function(){
-      var d = DATA.dreams50.find(function(x){return x.id===el.dataset.id;});
-      d.done = !d.done; saveData(); renderDreams50();
-    });
-  });
-  grid.querySelectorAll('input[type=text]').forEach(function(el){
-    el.addEventListener('input', function(){
-      var d = DATA.dreams50.find(function(x){return x.id===el.dataset.id;});
-      d.text = el.value; saveData();
-    });
-  });
-}
-
-/* ============== 5年後 / 10年後的我 ============== */
-document.addEventListener('DOMContentLoaded', function(){
-  document.getElementById('future5Text').addEventListener('input', function(e){
-    DATA.future5 = e.target.value; saveData();
-  });
-  document.getElementById('future10Text').addEventListener('input', function(e){
-    DATA.future10 = e.target.value; saveData();
-  });
-});
-
-/* ============== 年度重要記事 ============== */
-function renderYearEvents(){
-  var wrap = document.getElementById('eventListWrap');
-  var sorted = DATA.yearEvents.slice().sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); });
-  if(sorted.length===0){
-    wrap.innerHTML = '<div class="empty-state"><div class="es-icon">📌</div><div class="es-text">還沒有記事，記下今年第一個重要時刻吧</div></div>';
-    return;
-  }
-  wrap.innerHTML = '';
-  sorted.forEach(function(ev){
-    var el = document.createElement('div');
-    el.className = 'event-item';
-    el.innerHTML =
-      '<div class="event-date">'+(ev.date||'未定日期')+'</div>'+
-      '<div class="event-body"><div class="event-title">'+escapeHTML(ev.title||'（未命名）')+'</div>'+
-      (ev.note? '<div class="event-note">'+escapeHTML(ev.note)+'</div>' : '')+'</div>'+
-      '<div class="event-actions">'+
-      '<button class="icon-btn" data-edit="'+ev.id+'" title="編輯">✎</button>'+
-      '<button class="icon-btn danger" data-del="'+ev.id+'" title="刪除">✕</button></div>';
-    wrap.appendChild(el);
-  });
-  wrap.querySelectorAll('[data-edit]').forEach(function(el){
-    el.addEventListener('click', function(){ openEventPrompt(el.dataset.edit); });
-  });
-  wrap.querySelectorAll('[data-del]').forEach(function(el){
-    el.addEventListener('click', function(){
-      if(!confirmDelete('確定要刪除這則記事嗎？')) return;
-      var ev = DATA.yearEvents.find(function(x){return x.id===el.dataset.del;});
-      moveToTrash('yearevent', ev.title || '（未命名）', ev);
-      DATA.yearEvents = DATA.yearEvents.filter(function(x){return x.id!==el.dataset.del;});
-      saveData(); renderYearEvents();
-      showToast('已移到垃圾桶，30 天內可復原');
-    });
-  });
-}
-function openEventPrompt(id){
-  var ev = id ? DATA.yearEvents.find(function(x){return x.id===id;}) : {id:uid(), date:todayStr(), title:'', note:''};
-  var title = prompt('事件標題：', ev.title || '');
-  if(title===null) return;
-  var date = prompt('日期（YYYY-MM-DD）：', ev.date || todayStr());
-  if(date===null) return;
-  var note = prompt('補充說明（可留空）：', ev.note || '');
-  if(note===null) note='';
-  ev.title=title; ev.date=date; ev.note=note;
-  if(!id) DATA.yearEvents.push(ev);
-  saveData(); renderYearEvents();
-}
-document.addEventListener('DOMContentLoaded', function(){
-  document.getElementById('addEventBtn').addEventListener('click', function(){ openEventPrompt(null); });
-});
-
-/* ============== 月記事（月曆規劃，未來一個月一目了然） ============== */
-var MONTH_LABEL = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-var calState = (function(){ var t = new Date(); return {year:t.getFullYear(), month:t.getMonth()+1}; })();
-var calSelectedDate = null;
-
-function renderCalendar(){
-  document.getElementById('calNavLabel').textContent = calState.year+'年'+calState.month+'月';
-  buildCalendarGrid();
-  var mk = String(calState.month).padStart(2,'0');
-  var rec = DATA.monthNotes.find(function(x){return x.month===mk;});
-  document.getElementById('calReflectTitle').textContent = MONTH_LABEL[calState.month-1]+' 的一句話';
-  document.getElementById('calReflectText').value = rec ? rec.text : '';
-}
-function sortDayEvents(evs){
-  return evs.slice().sort(function(a,b){
-    var at = a.time || '', bt = b.time || '';
-    if(at && bt) return at.localeCompare(bt);
-    if(at && !bt) return -1;
-    if(!at && bt) return 1;
-    return 0;
-  });
-}
-function buildCalendarGrid(){
-  var grid = document.getElementById('calGrid');
-  grid.innerHTML = '';
-  var year = calState.year, month = calState.month;
-  var startWeekday = new Date(year, month-1, 1).getDay();
-  var daysInMonth = new Date(year, month, 0).getDate();
-  var daysInPrevMonth = new Date(year, month-1, 0).getDate();
-  var todayKey = todayStr();
-  var cells = [];
-  for(var i=0;i<startWeekday;i++){
-    cells.push({day: daysInPrevMonth - startWeekday + 1 + i, other:true, dateKey:null});
-  }
-  for(var d=1; d<=daysInMonth; d++){
-    var mm = String(month).padStart(2,'0'), dd = String(d).padStart(2,'0');
-    cells.push({day:d, other:false, dateKey: year+'-'+mm+'-'+dd});
-  }
-  var trailIdx = 1;
-  while(cells.length % 7 !== 0){
-    cells.push({day: trailIdx, other:true, dateKey:null});
-    trailIdx++;
-  }
-  cells.forEach(function(c){
-    var el = document.createElement('div');
-    el.className = 'cal-cell' + (c.other?' other-month':'') + (c.dateKey===todayKey?' today':'');
-    var tagsHtml = '';
-    if(c.dateKey){
-      var evs = sortDayEvents(DATA.calendarEvents.filter(function(e){return e.date===c.dateKey;}));
-      evs.slice(0,3).forEach(function(e){ tagsHtml += '<div class="cal-tag">'+(e.time?escapeHTML(e.time)+' ':'')+escapeHTML(e.text)+'</div>'; });
-      if(evs.length>3){ tagsHtml += '<div class="cal-tag-more">+'+(evs.length-3)+'</div>'; }
-    }
-    el.innerHTML = '<div class="cal-date-num">'+c.day+'</div>'+tagsHtml;
-    if(c.dateKey){
-      el.addEventListener('click', function(){ openCalDayModal(c.dateKey); });
-    }
-    grid.appendChild(el);
-  });
-}
-function openCalDayModal(dateKey){
-  calSelectedDate = dateKey;
-  var d = new Date(dateKey+'T00:00:00');
-  var wd = ['週日','週一','週二','週三','週四','週五','週六'][d.getDay()];
-  document.getElementById('calDayModalTitle').textContent = (d.getMonth()+1)+'/'+d.getDate()+' '+wd;
-  renderCalDayTags();
-  document.getElementById('calDayNewTag').value = '';
-  document.getElementById('calDayNewTime').innerHTML = buildTimeOptionsHTML('', 30);
-  document.getElementById('calDayModalOverlay').classList.add('open');
-}
-function renderCalDayTags(){
-  var wrap = document.getElementById('calDayTagList');
-  var evs = sortDayEvents(DATA.calendarEvents.filter(function(e){return e.date===calSelectedDate;}));
-  if(evs.length===0){
-    wrap.innerHTML = '<div class="hint">這天還沒有安排，新增第一件事吧</div>';
-    return;
-  }
-  wrap.innerHTML = evs.map(function(e){
-    return '<div class="cal-day-tag-row"><span class="cal-day-tag-time">'+(e.time?escapeHTML(e.time):'—')+'</span><span class="cal-day-tag-text">'+escapeHTML(e.text)+'</span><button class="icon-btn danger" data-del="'+e.id+'">✕</button></div>';
-  }).join('');
-  wrap.querySelectorAll('[data-del]').forEach(function(el){
-    el.addEventListener('click', function(){
-      if(!confirmDelete('確定要刪除這件行程嗎？')) return;
-      var e = DATA.calendarEvents.find(function(x){return x.id===el.dataset.del;});
-      moveToTrash('calendarevent', (e.time?e.time+' ':'')+e.text, e);
-      DATA.calendarEvents = DATA.calendarEvents.filter(function(x){return x.id!==el.dataset.del;});
-      saveData(); renderCalDayTags(); buildCalendarGrid();
-      showToast('已移到垃圾桶，30 天內可復原');
-    });
-  });
-}
-function addCalDayTag(){
-  var input = document.getElementById('calDayNewTag');
-  var timeInput = document.getElementById('calDayNewTime');
-  var val = input.value.trim();
-  if(!val) return;
-  DATA.calendarEvents.push({id:uid(), date:calSelectedDate, text:val, time: timeInput.value || ''});
-  saveData();
-  input.value = '';
-  timeInput.value = '';
-  renderCalDayTags();
-  buildCalendarGrid();
-}
-document.addEventListener('DOMContentLoaded', function(){
-  document.getElementById('calPrevBtn').addEventListener('click', function(){
-    calState.month--; if(calState.month<1){ calState.month=12; calState.year--; }
-    renderCalendar();
-  });
-  document.getElementById('calNextBtn').addEventListener('click', function(){
-    calState.month++; if(calState.month>12){ calState.month=1; calState.year++; }
-    renderCalendar();
-  });
-  document.getElementById('calDayModalClose').addEventListener('click', function(){
-    document.getElementById('calDayModalOverlay').classList.remove('open');
-  });
-  document.getElementById('calDayModalOverlay').addEventListener('click', function(e){
-    if(e.target.id==='calDayModalOverlay') document.getElementById('calDayModalOverlay').classList.remove('open');
-  });
-  document.getElementById('calDayForm').addEventListener('submit', function(e){
-    e.preventDefault();
-    addCalDayTag();
-  });
-  document.getElementById('calReflectText').addEventListener('input', function(e){
-    var mk = String(calState.month).padStart(2,'0');
-    var rec = DATA.monthNotes.find(function(x){return x.month===mk;});
-    if(rec){ rec.text = e.target.value; saveData(); }
-  });
-});
-
-/* ============== 日記事（儀表板 + 列表 + 表單） ============== */
-function calcStreak(){
-  var dateSet = {};
-  DATA.days.forEach(function(d){ dateSet[d.date]=true; });
-  var cur = new Date();
-  if(!dateSet[formatDate(cur)]) cur.setDate(cur.getDate()-1);
-  var streak=0;
-  while(dateSet[formatDate(cur)]){ streak++; cur.setDate(cur.getDate()-1); }
-  return streak;
-}
-function renderDaily(){
-  document.getElementById('statStreak').textContent = calcStreak();
-  document.getElementById('statTotal').textContent = DATA.days.length;
-
-  var thisMonth = todayStr().slice(0,7);
-  var monthDays = DATA.days.filter(function(d){ return (d.date||'').slice(0,7)===thisMonth; });
-  var awesomeCount = monthDays.filter(function(d){ return d.status==='awesome'; }).length;
-  document.getElementById('statAwesome').textContent = monthDays.length ? Math.round(awesomeCount/monthDays.length*100)+'%' : '0%';
-
-  var dreamDone = DATA.dreams50.filter(function(d){return d.done;}).length;
-  document.getElementById('statDreams').textContent = dreamDone+'/'+DATA.dreams50.length;
-
-  renderDailyList();
-}
-var dailyFilterStatus = 'all';
-function renderDailyList(){
-  var wrap = document.getElementById('dailyList');
-  var q = (document.getElementById('dailySearch').value||'').trim().toLowerCase();
-  var list = DATA.days.slice().sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); });
-  list = list.filter(function(d){
-    if(dailyFilterStatus!=='all' && d.status!==dailyFilterStatus) return false;
-    if(!q) return true;
-    var hay = [d.date, d.summary, d.quote, d.manifest, d.gratitude, (d.todos||[]).map(function(t){return t.text;}).join(' ')].join(' ').toLowerCase();
-    return hay.indexOf(q)>-1;
-  });
-  if(list.length===0){
-    wrap.innerHTML = '<div class="empty-state"><div class="es-icon">📝</div><div class="es-text">找不到符合的紀錄，開始復盤今天吧</div></div>';
-    return;
-  }
-  wrap.innerHTML = '';
-  list.forEach(function(d){
-    var statusLabel = {awesome:'超棒都完成了', keepgoing:'繼續加油', lazy:'偷懶要打屁屁'}[d.status] || '尚未標記';
-    var el = document.createElement('div');
-    el.className = 'row';
-    el.innerHTML =
-      '<div class="status-dot status-'+(d.status||'keepgoing')+'"></div>'+
-      '<div class="row-main"><div class="row-date">'+d.date+' ・ '+statusLabel+'</div>'+
-      '<div class="row-text">'+escapeHTML(d.summary || '')+'</div></div>'+
-      '<div class="row-arrow">›</div>';
-    el.addEventListener('click', function(){ openDailyModal(d.id); });
-    wrap.appendChild(el);
-  });
-}
-document.addEventListener('DOMContentLoaded', function(){
-  document.getElementById('dailySearch').addEventListener('input', renderDailyList);
-  document.getElementById('statusFilter').addEventListener('click', function(e){
-    var btn = e.target.closest('.pill');
-    if(!btn) return;
-    dailyFilterStatus = btn.dataset.status;
-    document.querySelectorAll('#statusFilter .pill').forEach(function(p){ p.classList.remove('active'); });
-    btn.classList.add('active');
-    renderDailyList();
-  });
-  document.getElementById('addTodayBtn').addEventListener('click', function(){ openDailyModal(null); });
-});
-
-/* ---- daily modal ---- */
-var editingEntryId = null;
-var draftTodos = [];
-var draftStatus = 'keepgoing';
-var draftDayIdForTrash = null;
-
-function openDailyModal(id){
-  editingEntryId = id;
-  var entry;
-  if(id){
-    entry = DATA.days.find(function(x){return x.id===id;});
-  } else {
-    var existingToday = DATA.days.find(function(x){return x.date===todayStr();});
-    if(existingToday){ editingEntryId = existingToday.id; entry = existingToday; }
-    else entry = {id:null, date:todayStr(), quote:randomQuote(), status:'keepgoing', todos:[], manifest:'', gratitude:''};
-  }
-  draftDayIdForTrash = editingEntryId;
-  document.getElementById('dailyModalTitle').textContent = editingEntryId ? '編輯復盤' : '今日復盤';
-  document.getElementById('f-date').value = entry.date;
-  document.getElementById('f-summary').value = entry.summary || '';
-  document.getElementById('f-quote').value = entry.quote || '';
-  document.getElementById('f-manifest').value = entry.manifest || '';
-  document.getElementById('f-gratitude').value = entry.gratitude || '';
-  draftStatus = entry.status || 'keepgoing';
-  draftTodos = (entry.todos||[]).map(function(t){ return {id:t.id||uid(), text:t.text, done:t.done, time:t.time||''}; });
-  renderStatusChoice();
-  renderDraftTodos();
-  document.getElementById('deleteEntryBtn').style.display = editingEntryId ? 'inline-flex' : 'none';
-  document.getElementById('dailyModalOverlay').classList.add('open');
-}
-function closeDailyModal(){
-  document.getElementById('dailyModalOverlay').classList.remove('open');
-}
-function renderStatusChoice(){
-  document.querySelectorAll('.status-opt').forEach(function(el){
-    el.classList.toggle('active', el.dataset.s===draftStatus);
-  });
-}
-/* 產生固定 15 分鐘一格的時間選項（下拉選單），避免不同瀏覽器/裝置的原生時間選擇器不受 step 限制的問題 */
-function buildTimeOptionsHTML(selectedValue, stepMinutes){
-  var html = '<option value="">--:--</option>';
-  for(var h=0; h<24; h++){
-    for(var m=0; m<60; m+=stepMinutes){
-      var hh = String(h).padStart(2,'0'), mm = String(m).padStart(2,'0');
-      var v = hh+':'+mm;
-      html += '<option value="'+v+'"'+(v===selectedValue?' selected':'')+'>'+v+'</option>';
-    }
-  }
-  return html;
-}
-function sortDraftTodos(list){
-  return list.slice().sort(function(a,b){
-    var at = a.time || '', bt = b.time || '';
-    if(at && bt) return at.localeCompare(bt);
-    if(at && !bt) return -1;
-    if(!at && bt) return 1;
-    return 0;
-  });
-}
-function renderDraftTodos(){
-  var wrap = document.getElementById('f-todos');
-  wrap.innerHTML = '';
-  if(draftTodos.length===0){
-    wrap.innerHTML = '<div class="hint">還沒有代辦事項，點下方按鈕新增</div>';
-  }
-  var sorted = sortDraftTodos(draftTodos);
-  sorted.forEach(function(t){
-    var row = document.createElement('div');
-    row.className = 'check-row' + (t.done?' done':'');
-    row.innerHTML =
-      '<div class="check-box'+(t.done?' checked':'')+'" data-id="'+t.id+'">'+(t.done?'✓':'')+'</div>'+
-      '<select class="time-input" data-time-id="'+t.id+'">'+buildTimeOptionsHTML(t.time||'', 15)+'</select>'+
-      '<input type="text" value="'+escapeAttr(t.text)+'" placeholder="代辦內容" data-id="'+t.id+'">'+
-      '<button class="icon-btn danger" data-del="'+t.id+'">✕</button>';
-    wrap.appendChild(row);
-  });
-  wrap.querySelectorAll('.check-box').forEach(function(el){
-    el.addEventListener('click', function(){
-      var t = draftTodos.find(function(x){return x.id===el.dataset.id;});
-      t.done = !t.done; renderDraftTodos();
-    });
-  });
-  wrap.querySelectorAll('input[type=text]').forEach(function(el){
-    el.addEventListener('input', function(){
-      var t = draftTodos.find(function(x){return x.id===el.dataset.id;});
-      t.text = el.value;
-    });
-  });
-  wrap.querySelectorAll('select.time-input').forEach(function(el){
-    el.addEventListener('change', function(){
-      var t = draftTodos.find(function(x){return x.id===el.dataset.timeId;});
-      t.time = el.value;
-      renderDraftTodos();
-    });
-  });
-  wrap.querySelectorAll('[data-del]').forEach(function(el){
-    el.addEventListener('click', function(){
-      var t = draftTodos.find(function(x){return x.id===el.dataset.del;});
-      if(t && (t.text||'').trim()!==''){
-        if(!confirmDelete('確定要刪除這則代辦事項嗎？')) return;
-        moveToTrash('dailytodo', t.text, {dayId: draftDayIdForTrash, todo: t});
-        showToast('已移到垃圾桶，30 天內可復原');
-      }
-      draftTodos = draftTodos.filter(function(x){return x.id!==el.dataset.del;});
-      /* 立刻同步回真正的資料，不用等按「儲存」才生效，避免垃圾桶復原時疊加出重複的代辦事項 */
-      if(editingEntryId){
-        var syncDay = DATA.days.find(function(x){return x.id===editingEntryId;});
-        if(syncDay){
-          syncDay.todos = draftTodos.filter(function(x){ return (x.text||'').trim()!==''; });
-          saveData();
-        }
-      }
-      renderDraftTodos();
-    });
-  });
-}
-document.addEventListener('DOMContentLoaded', function(){
-  document.getElementById('addTodoBtn').addEventListener('click', function(){
-    draftTodos.push({id:uid(), text:'', done:false, time:''});
-    renderDraftTodos();
-    var inputs = document.querySelectorAll('#f-todos input[type=text]');
-    if(inputs.length) inputs[inputs.length-1].focus();
-  });
-  document.getElementById('statusChoice').addEventListener('click', function(e){
-    var btn = e.target.closest('.status-opt');
-    if(!btn) return;
-    draftStatus = btn.dataset.s;
-    renderStatusChoice();
-  });
-  document.getElementById('randomQuoteBtn').addEventListener('click', function(){
-    document.getElementById('f-quote').value = randomQuote();
-  });
-  document.getElementById('dailyModalClose').addEventListener('click', closeDailyModal);
-  document.getElementById('dailyModalOverlay').addEventListener('click', function(e){
-    if(e.target.id==='dailyModalOverlay') closeDailyModal();
-  });
-  document.getElementById('saveEntryBtn').addEventListener('click', function(){
-    var date = document.getElementById('f-date').value || todayStr();
-    var dupe = DATA.days.find(function(x){ return x.date===date && x.id!==editingEntryId; });
-    if(dupe){
-      showToast('這一天已經有紀錄囉，請直接編輯該筆');
-      return;
-    }
-    var payload = {
-      date: date,
-      summary: document.getElementById('f-summary').value,
-      quote: document.getElementById('f-quote').value,
-      status: draftStatus,
-      todos: draftTodos.filter(function(t){ return t.text.trim()!==''; }),
-      manifest: document.getElementById('f-manifest').value,
-      gratitude: document.getElementById('f-gratitude').value
-    };
-    if(editingEntryId){
-      var idx = DATA.days.findIndex(function(x){return x.id===editingEntryId;});
-      DATA.days[idx] = Object.assign({id:editingEntryId}, payload);
-    } else {
-      DATA.days.push(Object.assign({id:uid()}, payload));
-    }
-    saveData();
-    closeDailyModal();
-    showToast('已儲存今天的復盤 🌿');
-    renderDaily();
-  });
-  document.getElementById('deleteEntryBtn').addEventListener('click', function(){
-    if(!editingEntryId) return;
-    if(!confirmDelete('確定要刪除這整篇日記事嗎？')) return;
-    var entry = DATA.days.find(function(x){return x.id===editingEntryId;});
-    moveToTrash('dailyentry', entry.date + '（'+(entry.summary||entry.quote||'日記事')+'）', entry);
-    DATA.days = DATA.days.filter(function(x){return x.id!==editingEntryId;});
-    saveData();
-    closeDailyModal();
-    showToast('已移到垃圾桶，30 天內可復原');
-    renderDaily();
-  });
-});
-
-/* ============== 匯出／匯入 ============== */
-document.addEventListener('DOMContentLoaded', function(){
-  document.getElementById('exportBtn').addEventListener('click', function(){
-    var blob = new Blob([JSON.stringify(DATA, null, 2)], {type:'application/json'});
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = '人生規劃手帳備份_'+todayStr()+'.json';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    showToast('已匯出備份檔案');
-  });
-  document.getElementById('importBtnTrigger').addEventListener('click', function(){
-    document.getElementById('importFile').click();
-  });
-  document.getElementById('importFile').addEventListener('change', function(e){
-    var file = e.target.files[0];
-    if(!file) return;
-    var reader = new FileReader();
-    reader.onload = function(ev){
-      try{
-        var parsed = JSON.parse(ev.target.result);
-        if(!confirm('匯入將會覆蓋目前這組連結上的所有資料，確定要繼續嗎？')) return;
-        DATA = normalizeData(parsed);
-        saveData();
-        showToast('匯入成功！');
-        renderViewContent(currentView);
-        renderCover();
-      }catch(err){
-        showToast('匯入失敗，檔案格式不正確');
-      }
-    };
-    reader.readAsText(file);
-    e.target.value = '';
-  });
-});
-
-/* ============== 年份設定 ============== */
-document.addEventListener('DOMContentLoaded', function(){
-  document.getElementById('yearEditBtn').addEventListener('click', function(){
-    var y = prompt('設定今年年份：', DATA.year);
-    if(y===null || y.trim()==='') return;
-    DATA.year = y.trim();
-    saveData();
-    renderCover();
-  });
-  document.getElementById('enterBtn').addEventListener('click', function(){ showView('toc'); });
-  document.getElementById('brandHome').addEventListener('click', function(){ showView('toc'); });
-  document.getElementById('menuBtn').addEventListener('click', openDrawer);
-  document.getElementById('overlay').addEventListener('click', closeDrawer);
-});
-
-/* ============== 工具函式 ============== */
-function escapeHTML(str){
-  if(str===undefined || str===null) return '';
-  return String(str).replace(/[&<>"']/g, function(c){
-    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
-  });
-}
-function escapeAttr(str){ return escapeHTML(str); }
-
-/* ============== 初始化 ============== */
-document.addEventListener('DOMContentLoaded', async function(){
-  if(!sbClient){
-    showLoadingError('連線雲端服務失敗，請檢查網路連線後重新整理');
-    return;
-  }
-  try{
-    DATA = await loadDataFromCloud();
-  }catch(e){
-    console.error('讀取雲端資料失敗', e);
-    showLoadingError('讀取資料失敗，請檢查網路連線後重新整理');
-    return;
-  }
-  purgeExpiredTrash();
-  hideLoadingScreen();
-  renderNav();
-  showView('cover');
-});
-
-})();
-</script>
 </body>
 </html>
