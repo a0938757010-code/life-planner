@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <title>人生規劃手帳｜成為自己人生的規劃者</title>
+<link rel="icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -85,12 +86,13 @@ section{padding:70px 0;}
 .feat-card .name{font-weight:900; font-size:15px; margin-bottom:6px;}
 .feat-card .desc{font-size:13px; color:var(--gray); line-height:1.8;}
 
-.preview-wrap{
-  background:#fff; border-radius:24px; padding:8px; box-shadow:var(--shadow-lg); max-width:760px; margin:0 auto;
+.preview-grid{display:flex; gap:18px; justify-content:center; flex-wrap:wrap;}
+.preview-card{
+  background:#fff; border-radius:22px; padding:8px; box-shadow:var(--shadow-lg); max-width:230px;
   border:1px solid rgba(55,53,47,0.06);
 }
-.preview-wrap img{display:block; width:100%; border-radius:18px;}
-.preview-caption{text-align:center; font-size:12.5px; color:var(--gray); margin-top:16px;}
+.preview-card img{display:block; width:100%; border-radius:16px;}
+.preview-caption{text-align:center; font-size:12.5px; color:var(--gray); margin-top:24px;}
 
 .price-section{background:var(--cream);}
 .price-card{
@@ -179,12 +181,12 @@ footer .copyright{font-size:11px; color:var(--gray); line-height:1.8; max-width:
   <div class="wrap">
     <div class="section-eyebrow">PREVIEW</div>
     <h2 class="section-title">畫面預覽</h2>
-    <div class="preview-wrap">
-      <div style="background:var(--light-pink); border-radius:18px; padding:60px 20px; text-align:center; color:var(--medium); font-size:14px;">
-        🌱 打開「開始使用」即可看到完整手帳畫面
-      </div>
+    <div class="preview-grid">
+      <div class="preview-card"><img src="preview-calendar.png" alt="月記事月曆規劃畫面"></div>
+      <div class="preview-card"><img src="preview-goals.png" alt="今年目標畫面"></div>
+      <div class="preview-card"><img src="preview-daily.png" alt="日記事每日復盤畫面"></div>
     </div>
-    <div class="preview-caption">封面、目錄、月曆、日記事……每一頁都為妳的日常打造。</div>
+    <div class="preview-caption">封面、目錄、月曆、日記事……每一頁都為妳的日常打造。（畫面為示範資料）</div>
   </div>
 </section>
 

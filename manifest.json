@@ -1,0 +1,14 @@
+{
+  "name": "人生規劃手帳",
+  "short_name": "人生手帳",
+  "description": "成為自己人生的規劃者：月記事、日記事、年度目標、夢想清單一站整理。",
+  "start_url": "./app.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FAFAF8",
+  "theme_color": "#C9938A",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
